@@ -1,5 +1,8 @@
 import Foundation
 
+/// A single product occurrence in the schedule: one product on one date for one routine (morning/night).
+/// Used to render the Today view, Schedule grid, and put-off logic. `shouldApply` reflects
+/// whether the product is due that day based on frequency and exclusions.
 struct ScheduleItem: Identifiable {
     var id: UUID
     var productId: UUID

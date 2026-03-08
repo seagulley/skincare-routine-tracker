@@ -1,5 +1,8 @@
 import Foundation
 
+/// A skincare product the user owns and uses in their routine.
+/// Stores name, ingredients, how often to use it (frequency), and which routines (morning/night) it belongs to.
+/// Products can exclude each other so they never appear on the same day.
 struct Product: Identifiable, Codable, Hashable {
     var id: UUID
     var name: String
@@ -49,6 +52,8 @@ struct Product: Identifiable, Codable, Hashable {
     }
 }
 
+/// A single ingredient within a product (e.g. "Vitamin C", "Niacinamide").
+/// Used for display and to support future features like ingredient overlap warnings.
 struct Ingredient: Identifiable, Codable, Hashable {
     var id: UUID
     var name: String

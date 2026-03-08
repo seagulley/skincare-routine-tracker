@@ -1,5 +1,7 @@
 import Foundation
 
+/// Time and enabled state for a routine reminder (e.g. "Morning at 8:00" or "Night at 21:00").
+/// One per routine type; used to schedule local notifications.
 struct ReminderConfig: Identifiable, Codable {
     var id: UUID
     var routineType: RoutineType
