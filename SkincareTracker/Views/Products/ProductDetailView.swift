@@ -32,6 +32,17 @@ struct ProductDetailView: View {
                 LabeledContent("Use every", value: "\(product.frequencyDays) day(s)")
                 LabeledContent("Routines", value: product.routineDescription)
             }
+
+            Section("Excluded Products") {
+                ForEach(
+                    product.excludedProductIds
+                        .map { store.product(by: $0)?.name ?? "Unknown" }
+                        .sorted(),
+                    id: \.self
+                ) { name in
+                    Text(name)
+                }
+            }
         }
         .navigationTitle(product.name)
         .navigationBarTitleDisplayMode(.inline)
