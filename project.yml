@@ -23,7 +23,7 @@ targets:
       path: SkincareTracker/Info.plist
       properties:
         UILaunchScreen:
-          backgroundColor: "#F5F0EB"
+          backgroundColor: "#F5F5F5"
         UIBackgroundModes:
           - remote-notification
         NSCalendarsUsageDescription: "Skincare Tracker needs calendar access to schedule reminders for your skincare routine."

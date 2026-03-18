@@ -7,6 +7,7 @@ import SwiftUI
 
 struct ProductDetailView: View {
     @EnvironmentObject var store: AppStore
+    @EnvironmentObject var savedBanner: SavedBannerTrigger
     let product: Product
     @State private var isEditing = false
     
@@ -15,35 +16,34 @@ struct ProductDetailView: View {
             Section("Product") {
                 Text(product.name)
                     .font(.headline)
+                    .foregroundStyle(AppColors.textPrimary)
+                    .listRowBackground(AppColors.rowBackground)
+                HStack {
+                    Text("Category")
+                        .foregroundStyle(AppColors.textSecondary)
+                    Spacer()
+                    Text(ProductCategory.category(id: product.categoryId).name)
+                        .foregroundStyle(AppColors.textPrimary)
+                }
+                .listRowBackground(AppColors.rowBackground)
             }
             
             Section("Ingredients") {
                 if product.ingredients.isEmpty {
                     Text("No ingredients added")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppColors.textSecondary)
+                        .listRowBackground(AppColors.rowBackground)
                 } else {
                     ForEach(product.ingredients) { ingredient in
                         Text(ingredient.name)
+                            .foregroundStyle(AppColors.textPrimary)
+                            .listRowBackground(AppColors.rowBackground)
                     }
                 }
             }
-            
-            Section("Usage") {
-                LabeledContent("Use every", value: "\(product.frequencyDays) day(s)")
-                LabeledContent("Routines", value: product.routineDescription)
-            }
-
-            Section("Excluded Products") {
-                ForEach(
-                    product.excludedProductIds
-                        .map { store.product(by: $0)?.name ?? "Unknown" }
-                        .sorted(),
-                    id: \.self
-                ) { name in
-                    Text(name)
-                }
-            }
         }
+        .scrollContentBackground(.hidden)
+        .background(AppColors.background)
         .navigationTitle(product.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -55,13 +55,16 @@ struct ProductDetailView: View {
         }
         .sheet(isPresented: $isEditing) {
             EditProductView(product: product)
+                .environmentObject(store)
+                .environmentObject(savedBanner)
         }
     }
 }
 
 #Preview {
     NavigationStack {
-        ProductDetailView(product: Product(name: "Vitamin C Serum", ingredientNames: ["Vitamin C", "Ferulic Acid"], frequencyDays: 1))
+        ProductDetailView(product: Product(name: "Vitamin C Serum", ingredientNames: ["Vitamin C", "Ferulic Acid"]))
             .environmentObject(AppStore())
+            .environmentObject(SavedBannerTrigger())
     }
 }

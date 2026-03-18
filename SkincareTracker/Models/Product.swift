@@ -1,54 +1,27 @@
 import Foundation
 
 /// A skincare product the user owns and uses in their routine.
-/// Stores name, ingredients, how often to use it (frequency), and which routines (morning/night) it belongs to.
-/// Products can exclude each other so they never appear on the same day.
+/// Stores name, ingredients, and category. Usage is configured in the Cycle editor.
 struct Product: Identifiable, Codable, Hashable {
     var id: UUID
     var name: String
     var ingredients: [Ingredient]
-    var frequencyDays: Int  // Use every X days
-    var lastUsedDate: Date?
-    /// Which routines this product is used in: morning, night, or both
-    var routineTypes: Set<RoutineType>
-    /// Products that should never be used in the same routine (same day, same morning/night) as this one
-    var excludedProductIds: Set<UUID>
+    /// Product category for recommended application order. Nil = Other.
+    var categoryId: String?
     
-    var frequencyDescription: String {
-        frequencyDays == 1 ? "Daily" : "Every \(frequencyDays) days"
-    }
-    
-    var routineDescription: String {
-        if routineTypes.contains(.morning) && routineTypes.contains(.night) {
-            return "Morning & Night"
-        } else if routineTypes.contains(.morning) {
-            return "Morning only"
-        } else if routineTypes.contains(.night) {
-            return "Night only"
-        } else {
-            return "Not in any routine"
-        }
-    }
-    
-    init(id: UUID = UUID(), name: String, ingredients: [Ingredient] = [], frequencyDays: Int = 1, lastUsedDate: Date? = nil, routineTypes: Set<RoutineType> = [.morning, .night], excludedProductIds: Set<UUID> = []) {
+    init(id: UUID = UUID(), name: String, ingredients: [Ingredient] = [], categoryId: String? = nil) {
         self.id = id
         self.name = name
         self.ingredients = ingredients
-        self.frequencyDays = frequencyDays
-        self.lastUsedDate = lastUsedDate
-        self.routineTypes = routineTypes
-        self.excludedProductIds = excludedProductIds
+        self.categoryId = categoryId
     }
     
     /// Convenience init for ingredients as strings (e.g. from comma-separated input)
-    init(id: UUID = UUID(), name: String, ingredientNames: [String], frequencyDays: Int = 1, lastUsedDate: Date? = nil, routineTypes: Set<RoutineType> = [.morning, .night], excludedProductIds: Set<UUID> = []) {
+    init(id: UUID = UUID(), name: String, ingredientNames: [String], categoryId: String? = nil) {
         self.id = id
         self.name = name
         self.ingredients = ingredientNames.map { Ingredient(name: $0) }
-        self.frequencyDays = frequencyDays
-        self.lastUsedDate = lastUsedDate
-        self.routineTypes = routineTypes
-        self.excludedProductIds = excludedProductIds
+        self.categoryId = categoryId
     }
 }
 

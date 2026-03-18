@@ -33,6 +33,30 @@ open SkincareTracker.xcodeproj
 - **Schedule** – View your routine for the next 14 days
 - **Reminders** – Set morning/night reminder times
 
+## Tests
+
+### Run tests (required to pass)
+
+```bash
+./scripts/test.sh
+```
+
+Fails unless:
+- **Line coverage ≥ 90%** (Swift does not emit branch/decision coverage)
+- **Mutation score > 85%** (MCDC proxy; install Muter: `brew install muter-mutation-testing/formulae/muter`)
+
+Use `SKIP_MUTATION=1 ./scripts/test.sh` to skip mutation testing (e.g. when Muter is not installed).
+
+### Coverage report
+
+```bash
+./scripts/coverage.sh
+```
+
+Or specify a simulator: `./scripts/coverage.sh "iPhone 15 Pro"`
+
+In Xcode: **Product → Test** (⌘U), then open the Report navigator (⌘9) and select the latest test run to see coverage.
+
 ## Project Structure
 
 ```

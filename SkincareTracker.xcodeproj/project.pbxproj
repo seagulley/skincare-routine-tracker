@@ -3,270 +3,415 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A10000000000000000000001 /* SkincareTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000001 /* SkincareTrackerApp.swift */; };
-		A10000000000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* ContentView.swift */; };
-		A10000000000000000000003 /* ProductsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* ProductsView.swift */; };
-		A10000000000000000000004 /* AddProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000004 /* AddProductView.swift */; };
-		A10000000000000000000005 /* ProductDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000005 /* ProductDetailView.swift */; };
-		A10000000000000000000006 /* EditProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000006 /* EditProductView.swift */; };
-		A10000000000000000000007 /* RoutinesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* RoutinesView.swift */; };
-		A10000000000000000000008 /* EditRoutineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* EditRoutineView.swift */; };
-		A10000000000000000000009 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000009 /* TodayView.swift */; };
-		A1000000000000000000000A /* PutOffSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000A /* PutOffSheetView.swift */; };
-		A1000000000000000000000B /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000B /* ScheduleView.swift */; };
-		A1000000000000000000000C /* RemindersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000C /* RemindersView.swift */; };
-		A1000000000000000000000D /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000D /* AppStore.swift */; };
-		A1000000000000000000000E /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000E /* Product.swift */; };
-		A1000000000000000000000F /* Routine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000F /* Routine.swift */; };
-		A10000000000000000000010 /* ScheduleItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000010 /* ScheduleItem.swift */; };
-		A10000000000000000000011 /* ReminderConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000011 /* ReminderConfig.swift */; };
-		A10000000000000000000012 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012 /* Assets.xcassets */; };
+		01A870D9AFBFA6C8D2C07458 /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7DF4E52182955C00A68E0A /* AppColors.swift */; };
+		3E47B9FA2CC3E3645844DBA3 /* PutOffSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F6757401F5E0B0E1BDED0D /* PutOffSheetView.swift */; };
+		4465B7916BC3337481DF9A85 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E1901467DAE88558CF03020 /* ContentView.swift */; };
+		4AFCCDF488578343A9EA87DF /* CycleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D6154E783D16AD56331501 /* CycleView.swift */; };
+		AABBCCDDEEFF112233445566 /* AddToCycleSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112233445566778899AABBCC /* AddToCycleSheet.swift */; };
+		50D4C32BA908C4E6F7C85868 /* ReminderConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A78EAA39EB47AD86BE7867A7 /* ReminderConfig.swift */; };
+		52EEAAF9DF6E84DFD152C350 /* SkincareTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73038CA622F55888E53CEE9 /* SkincareTrackerApp.swift */; };
+		60A4FCE1C61FBBBBAC4B09DE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 72076678EDAFFA62005D8DC9 /* Assets.xcassets */; };
+		713D831DA5728E9DEB40202B /* ProductsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4550BBFC4C13454DC5FCA9 /* ProductsView.swift */; };
+		75EE04963A079A11531017EE /* RemindersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769A7F0776C822F50B8C737B /* RemindersView.swift */; };
+		7D6AA3C9C1AE9B0EDECBBBB1 /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338F7255BE9852B37C01C671 /* AppStore.swift */; };
+		8D37D5C205779F9D50BDDCF6 /* SavedBannerTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F07FC03C73AE8B54505FF3 /* SavedBannerTrigger.swift */; };
+		9534495B6281DE51194DCBFB /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = F352F62F49CD44AF927C9615 /* Product.swift */; };
+		I1N2C3I4I5N6G7R8E9D0E1 /* INCIIngredients.swift in Sources */ = {isa = PBXBuildFile; fileRef = I1N2C3I4I5N6G7R8E9D0E0 /* INCIIngredients.swift */; };
+		I5N6P7U8T9S0A1N2I3T4I6 /* InputSanitizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = I5N6P7U8T9S0A1N2I3T4I5 /* InputSanitizer.swift */; };
+		P1C2A3T4E5G6O7R8Y9ABCDEF /* ProductCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = P1C2A3T4E5G6O7R8Y9ABCDE0 /* ProductCategory.swift */; };
+		985D0CAD9A464C6363E59C08 /* ScheduleItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E043360F1DD5EC668C8E397D /* ScheduleItem.swift */; };
+		A58769D6AF2311B1B09CEAB8 /* AddProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1208C60B06EF135F46C71500 /* AddProductView.swift */; };
+		B9DD39B8B4E85E381FDA8A38 /* Routine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EA0C7C01DD431ACCB821AB2 /* Routine.swift */; };
+		CD3D8D2F436141ED8FC420B4 /* EditProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81D48775E35C171F249D71F2 /* EditProductView.swift */; };
+		D86A50A7F0413087D59261DE /* ProductDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764811A1417ABF666878651C /* ProductDetailView.swift */; };
+		E3AB67C5D50261FCDACAB3B2 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7064F2BB7D365F9CFECD1B /* TodayView.swift */; };
+		FC8C798F93A105648A1727FF /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C98D0FCCDFF4D6778E65EE /* ScheduleView.swift */; };
+		H1K2S3RV4CE5E6A7B8C9D0 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = H1K2S3RV4CE5E6A7B8C9D1 /* HealthKitService.swift */; };
+		I2N3G4R5E6D7I8E9N0T1A2 /* IngredientLabelScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = I2N3G4R5E6D7I8E9N0T1A1 /* IngredientLabelScanner.swift */; };
+		I3M4A5G6E7P8I9C0K1E2R3 /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = I3M4A5G6E7P8I9C0K1E2R2 /* ImagePickerView.swift */; };
+		R3M4N5DR6SV7CE8F9A0B1C2 /* ReminderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = R3M4N5DR6SV7CE8F9A0B1C3 /* ReminderService.swift */; };
+		O1N2B3O4A5R6D7I8N9G001 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = O1N2B3O4A5R6D7I8N9G002 /* OnboardingView.swift */; };
+		R3MT5ST6TS7A1B2C3D4E5F6 /* AddProductTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = R3MT5ST6TS7A1B2C3D4E5F7 /* AddProductTests.swift */; };
+		R3MT5ST6TS7A1B2C3D4E5F8 /* CycleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = R3MT5ST6TS7A1B2C3D4E5F9 /* CycleTests.swift */; };
+		R3MT5ST6TS7A1B2C3D4E5G0 /* ReminderServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = R3MT5ST6TS7A1B2C3D4E5G1 /* ReminderServiceTests.swift */; };
+		R3MT5ST6TS7A1B2C3D4E5G2 /* ViewRenderingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = R3MT5ST6TS7A1B2C3D4E5G3 /* ViewRenderingTests.swift */; };
+		I4N5G6R7E8D9I0E1N2T3A5 /* IngredientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = I4N5G6R7E8D9I0E1N2T3A4 /* IngredientTests.swift */; };
+		R3MT5ST6TS7A1B2C3D4E5H2 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = R3MT5ST6TS7A1B2C3D4E5H5 /* XCTest.framework */; };
+		R3MT5ST6TS7A1B2C3D4E5H3 /* SkincareTracker.app in Frameworks */ = {isa = PBXBuildFile; fileRef = 891956B70E0F834744305A1D /* SkincareTracker.app */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A30000000000000000000001 /* SkincareTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkincareTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A20000000000000000000001 /* SkincareTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkincareTrackerApp.swift; sourceTree = "<group>"; };
-		A20000000000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		A20000000000000000000003 /* ProductsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsView.swift; sourceTree = "<group>"; };
-		A20000000000000000000004 /* AddProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductView.swift; sourceTree = "<group>"; };
-		A20000000000000000000005 /* ProductDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailView.swift; sourceTree = "<group>"; };
-		A20000000000000000000006 /* EditProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProductView.swift; sourceTree = "<group>"; };
-		A20000000000000000000007 /* RoutinesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutinesView.swift; sourceTree = "<group>"; };
-		A20000000000000000000008 /* EditRoutineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRoutineView.swift; sourceTree = "<group>"; };
-		A20000000000000000000009 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
-		A2000000000000000000000A /* PutOffSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PutOffSheetView.swift; sourceTree = "<group>"; };
-		A2000000000000000000000B /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
-		A2000000000000000000000C /* RemindersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersView.swift; sourceTree = "<group>"; };
-		A2000000000000000000000D /* AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
-		A2000000000000000000000E /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
-		A2000000000000000000000F /* Routine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Routine.swift; sourceTree = "<group>"; };
-		A20000000000000000000010 /* ScheduleItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleItem.swift; sourceTree = "<group>"; };
-		A20000000000000000000011 /* ReminderConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderConfig.swift; sourceTree = "<group>"; };
-		A20000000000000000000012 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1208C60B06EF135F46C71500 /* AddProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductView.swift; sourceTree = "<group>"; };
+		19F07FC03C73AE8B54505FF3 /* SavedBannerTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedBannerTrigger.swift; sourceTree = "<group>"; };
+		2A7064F2BB7D365F9CFECD1B /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
+		338F7255BE9852B37C01C671 /* AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
+		55F6757401F5E0B0E1BDED0D /* PutOffSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PutOffSheetView.swift; sourceTree = "<group>"; };
+		6694A83B5AE99446F1BA5117 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6E1901467DAE88558CF03020 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		70C98D0FCCDFF4D6778E65EE /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
+		72076678EDAFFA62005D8DC9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		764811A1417ABF666878651C /* ProductDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailView.swift; sourceTree = "<group>"; };
+		769A7F0776C822F50B8C737B /* RemindersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersView.swift; sourceTree = "<group>"; };
+		7EA0C7C01DD431ACCB821AB2 /* Routine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Routine.swift; sourceTree = "<group>"; };
+		81D48775E35C171F249D71F2 /* EditProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProductView.swift; sourceTree = "<group>"; };
+		891956B70E0F834744305A1D /* SkincareTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkincareTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9C4550BBFC4C13454DC5FCA9 /* ProductsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsView.swift; sourceTree = "<group>"; };
+		A73038CA622F55888E53CEE9 /* SkincareTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkincareTrackerApp.swift; sourceTree = "<group>"; };
+		A78EAA39EB47AD86BE7867A7 /* ReminderConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderConfig.swift; sourceTree = "<group>"; };
+		112233445566778899AABBCC /* AddToCycleSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToCycleSheet.swift; sourceTree = "<group>"; };
+		B2D6154E783D16AD56331501 /* CycleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CycleView.swift; sourceTree = "<group>"; };
+		CD7DF4E52182955C00A68E0A /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
+		E043360F1DD5EC668C8E397D /* ScheduleItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleItem.swift; sourceTree = "<group>"; };
+		F352F62F49CD44AF927C9615 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
+		I1N2C3I4I5N6G7R8E9D0E0 /* INCIIngredients.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = INCIIngredients.swift; sourceTree = "<group>"; };
+		I5N6P7U8T9S0A1N2I3T4I5 /* InputSanitizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputSanitizer.swift; sourceTree = "<group>"; };
+		P1C2A3T4E5G6O7R8Y9ABCDE0 /* ProductCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategory.swift; sourceTree = "<group>"; };
+		H1K2S3RV4CE5E6A7B8C9D1 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
+		I2N3G4R5E6D7I8E9N0T1A1 /* IngredientLabelScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientLabelScanner.swift; sourceTree = "<group>"; };
+		I3M4A5G6E7P8I9C0K1E2R2 /* ImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
+		R3M4N5DR6SV7CE8F9A0B1C3 /* ReminderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderService.swift; sourceTree = "<group>"; };
+		O1N2B3O4A5R6D7I8N9G002 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		R3MT5ST6TS7A1B2C3D4E5F7 /* AddProductTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductTests.swift; sourceTree = "<group>"; };
+		R3MT5ST6TS7A1B2C3D4E5F9 /* CycleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CycleTests.swift; sourceTree = "<group>"; };
+		R3MT5ST6TS7A1B2C3D4E5G1 /* ReminderServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderServiceTests.swift; sourceTree = "<group>"; };
+		R3MT5ST6TS7A1B2C3D4E5G3 /* ViewRenderingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewRenderingTests.swift; sourceTree = "<group>"; };
+		I4N5G6R7E8D9I0E1N2T3A4 /* IngredientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientTests.swift; sourceTree = "<group>"; };
+		R3MT5ST6TS7A1B2C3D4E5G4 /* SkincareTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkincareTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		R3MT5ST6TS7A1B2C3D4E5H5 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFrameworksBuildPhase section */
-		A40000000000000000000001 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXFrameworksBuildPhase section */
-
 /* Begin PBXGroup section */
-		A50000000000000000000001 = {
+		0A9DE9B700454B178E3A7326 /* Reminders */ = {
 			isa = PBXGroup;
 			children = (
-				A50000000000000000000002 /* SkincareTracker */,
-				A50000000000000000000003 /* Products */,
+				769A7F0776C822F50B8C737B /* RemindersView.swift */,
+			);
+			path = Reminders;
+			sourceTree = "<group>";
+		};
+		O1N2B3O4A5R6D7I8N9G003 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				O1N2B3O4A5R6D7I8N9G002 /* OnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		1685A7409A382493A7E7FE40 /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				CD7DF4E52182955C00A68E0A /* AppColors.swift */,
+			);
+			path = Design;
+			sourceTree = "<group>";
+		};
+		2E07F8DF82B5A8F237BB01F3 = {
+			isa = PBXGroup;
+			children = (
+				F85277241F8E46CCE7FE4A09 /* SkincareTracker */,
+				R3MT5ST6TS7A1B2C3D4E5G5 /* SkincareTrackerTests */,
+				6515C00DDA42511F788357BC /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		A50000000000000000000002 /* SkincareTracker */ = {
+		R3MT5ST6TS7A1B2C3D4E5G5 /* SkincareTrackerTests */ = {
 			isa = PBXGroup;
 			children = (
-				A20000000000000000000001 /* SkincareTrackerApp.swift */,
-				A50000000000000000000004 /* Views */,
-				A50000000000000000000005 /* AppState */,
-				A50000000000000000000006 /* Models */,
-				A20000000000000000000012 /* Assets.xcassets */,
-				A50000000000000000000007 /* Info.plist */,
+				R3MT5ST6TS7A1B2C3D4E5F7 /* AddProductTests.swift */,
+				I4N5G6R7E8D9I0E1N2T3A4 /* IngredientTests.swift */,
+				R3MT5ST6TS7A1B2C3D4E5F9 /* CycleTests.swift */,
+				R3MT5ST6TS7A1B2C3D4E5G1 /* ReminderServiceTests.swift */,
+				R3MT5ST6TS7A1B2C3D4E5G3 /* ViewRenderingTests.swift */,
 			);
-			path = SkincareTracker;
+			path = SkincareTrackerTests;
 			sourceTree = "<group>";
 		};
-		A50000000000000000000003 /* Products */ = {
+		6515C00DDA42511F788357BC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A30000000000000000000001 /* SkincareTracker.app */,
+				891956B70E0F834744305A1D /* SkincareTracker.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A50000000000000000000004 /* Views */ = {
+		6823CCFA0A04B13EEC92D892 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				A20000000000000000000002 /* ContentView.swift */,
-				A50000000000000000000008 /* Products */,
-				A50000000000000000000009 /* Routines */,
-				A5000000000000000000000A /* Today */,
-				A5000000000000000000000B /* Schedule */,
-				A5000000000000000000000C /* Reminders */,
+				6E1901467DAE88558CF03020 /* ContentView.swift */,
+				9B86AB9188457BDE8C2213DC /* Cycle */,
+				O1N2B3O4A5R6D7I8N9G003 /* Onboarding */,
+				DC83F0FAF99EEBC150BF0129 /* Products */,
+				0A9DE9B700454B178E3A7326 /* Reminders */,
+				EA6D51D48B07BB17E30922E9 /* Schedule */,
+				856DE6C38152CFC0076FFE05 /* Today */,
 			);
 			path = Views;
 			sourceTree = "<group>";
 		};
-		A50000000000000000000005 /* AppState */ = {
+		80DF87551BA248D87B4F778C /* AppState */ = {
 			isa = PBXGroup;
 			children = (
-				A2000000000000000000000D /* AppStore.swift */,
+				338F7255BE9852B37C01C671 /* AppStore.swift */,
+				19F07FC03C73AE8B54505FF3 /* SavedBannerTrigger.swift */,
 			);
 			path = AppState;
 			sourceTree = "<group>";
 		};
-		A50000000000000000000006 /* Models */ = {
+		856DE6C38152CFC0076FFE05 /* Today */ = {
 			isa = PBXGroup;
 			children = (
-				A2000000000000000000000E /* Product.swift */,
-				A2000000000000000000000F /* Routine.swift */,
-				A20000000000000000000010 /* ScheduleItem.swift */,
-				A20000000000000000000011 /* ReminderConfig.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		A50000000000000000000007 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A50000000000000000000008 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A20000000000000000000003 /* ProductsView.swift */,
-				A20000000000000000000004 /* AddProductView.swift */,
-				A20000000000000000000005 /* ProductDetailView.swift */,
-				A20000000000000000000006 /* EditProductView.swift */,
-			);
-			path = Products;
-			sourceTree = "<group>";
-		};
-		A50000000000000000000009 /* Routines */ = {
-			isa = PBXGroup;
-			children = (
-				A20000000000000000000007 /* RoutinesView.swift */,
-				A20000000000000000000008 /* EditRoutineView.swift */,
-			);
-			path = Routines;
-			sourceTree = "<group>";
-		};
-		A5000000000000000000000A /* Today */ = {
-			isa = PBXGroup;
-			children = (
-				A20000000000000000000009 /* TodayView.swift */,
-				A2000000000000000000000A /* PutOffSheetView.swift */,
+				55F6757401F5E0B0E1BDED0D /* PutOffSheetView.swift */,
+				2A7064F2BB7D365F9CFECD1B /* TodayView.swift */,
 			);
 			path = Today;
 			sourceTree = "<group>";
 		};
-		A5000000000000000000000B /* Schedule */ = {
+		9B86AB9188457BDE8C2213DC /* Cycle */ = {
 			isa = PBXGroup;
 			children = (
-				A2000000000000000000000B /* ScheduleView.swift */,
+				112233445566778899AABBCC /* AddToCycleSheet.swift */,
+				B2D6154E783D16AD56331501 /* CycleView.swift */,
+			);
+			path = Cycle;
+			sourceTree = "<group>";
+		};
+		B2C0B53E4AD25386C7E224DA /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				I1N2C3I4I5N6G7R8E9D0E0 /* INCIIngredients.swift */,
+				I5N6P7U8T9S0A1N2I3T4I5 /* InputSanitizer.swift */,
+				F352F62F49CD44AF927C9615 /* Product.swift */,
+				P1C2A3T4E5G6O7R8Y9ABCDE0 /* ProductCategory.swift */,
+				A78EAA39EB47AD86BE7867A7 /* ReminderConfig.swift */,
+				7EA0C7C01DD431ACCB821AB2 /* Routine.swift */,
+				E043360F1DD5EC668C8E397D /* ScheduleItem.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		S3RV1C3S4GR0U5P6E7F8A9B0 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				H1K2S3RV4CE5E6A7B8C9D1 /* HealthKitService.swift */,
+				I2N3G4R5E6D7I8E9N0T1A1 /* IngredientLabelScanner.swift */,
+				R3M4N5DR6SV7CE8F9A0B1C3 /* ReminderService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		DC83F0FAF99EEBC150BF0129 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1208C60B06EF135F46C71500 /* AddProductView.swift */,
+				81D48775E35C171F249D71F2 /* EditProductView.swift */,
+				I3M4A5G6E7P8I9C0K1E2R2 /* ImagePickerView.swift */,
+				764811A1417ABF666878651C /* ProductDetailView.swift */,
+				9C4550BBFC4C13454DC5FCA9 /* ProductsView.swift */,
+			);
+			path = Products;
+			sourceTree = "<group>";
+		};
+		EA6D51D48B07BB17E30922E9 /* Schedule */ = {
+			isa = PBXGroup;
+			children = (
+				70C98D0FCCDFF4D6778E65EE /* ScheduleView.swift */,
 			);
 			path = Schedule;
 			sourceTree = "<group>";
 		};
-		A5000000000000000000000C /* Reminders */ = {
+		F85277241F8E46CCE7FE4A09 /* SkincareTracker */ = {
 			isa = PBXGroup;
 			children = (
-				A2000000000000000000000C /* RemindersView.swift */,
+				72076678EDAFFA62005D8DC9 /* Assets.xcassets */,
+				6694A83B5AE99446F1BA5117 /* Info.plist */,
+				A73038CA622F55888E53CEE9 /* SkincareTrackerApp.swift */,
+				80DF87551BA248D87B4F778C /* AppState */,
+				1685A7409A382493A7E7FE40 /* Design */,
+				B2C0B53E4AD25386C7E224DA /* Models */,
+				S3RV1C3S4GR0U5P6E7F8A9B0 /* Services */,
+				6823CCFA0A04B13EEC92D892 /* Views */,
 			);
-			path = Reminders;
+			path = SkincareTracker;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A60000000000000000000001 /* SkincareTracker */ = {
+		A7FA437BB0024D46D3EC059A /* SkincareTracker */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A70000000000000000000002 /* Build configuration list for PBXNativeTarget "SkincareTracker" */;
+			buildConfigurationList = FE2324A27E2CB6AD8051F158 /* Build configuration list for PBXNativeTarget "SkincareTracker" */;
 			buildPhases = (
-				A60000000000000000000002 /* Sources */,
-				A40000000000000000000001 /* Frameworks */,
-				A60000000000000000000003 /* Resources */,
+				AEE82688B0B1C267584DF086 /* Sources */,
+				CD6A67ABD2024F3042353F4C /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = SkincareTracker;
+			packageProductDependencies = (
+			);
 			productName = SkincareTracker;
-			productReference = A30000000000000000000001 /* SkincareTracker.app */;
+			productReference = 891956B70E0F834744305A1D /* SkincareTracker.app */;
 			productType = "com.apple.product-type.application";
+		};
+		R3MT5ST6TS7A1B2C3D4E5G6 /* SkincareTrackerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = R3MT5ST6TS7A1B2C3D4E5G7 /* Build configuration list for PBXNativeTarget "SkincareTrackerTests" */;
+			buildPhases = (
+				R3MT5ST6TS7A1B2C3D4E5G8 /* Sources */,
+				R3MT5ST6TS7A1B2C3D4E5G9 /* Frameworks */,
+				R3MT5ST6TS7A1B2C3D4E5H0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				R3MT5ST6TS7A1B2C3D4E5H1 /* PBXTargetDependency */,
+			);
+			name = SkincareTrackerTests;
+			productName = SkincareTrackerTests;
+			productReference = R3MT5ST6TS7A1B2C3D4E5G4 /* SkincareTrackerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		A80000000000000000000001 /* Project object */ = {
+		E96D3615280B518EEE99F4AE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1500;
+				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1500;
-				TargetAttributes = {
-					A60000000000000000000001 = {
-						CreatedOnToolsVersion = 15.0;
-					};
-				};
 			};
-			buildConfigurationList = A70000000000000000000001 /* Build configuration list for PBXProject "SkincareTracker" */;
-			compatibilityVersion = "Xcode 14.0";
+			buildConfigurationList = 4B35DA8ACCFB7890A8EE0B29 /* Build configuration list for PBXProject "SkincareTracker" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
+				en,
 			);
-			mainGroup = A50000000000000000000001;
-			productRefGroup = A50000000000000000000003 /* Products */;
+			mainGroup = 2E07F8DF82B5A8F237BB01F3;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 6515C00DDA42511F788357BC /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A60000000000000000000001 /* SkincareTracker */,
+				A7FA437BB0024D46D3EC059A /* SkincareTracker */,
+				R3MT5ST6TS7A1B2C3D4E5G6 /* SkincareTrackerTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		A60000000000000000000003 /* Resources */ = {
+		CD6A67ABD2024F3042353F4C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10000000000000000000012 /* Assets.xcassets in Resources */,
+				60A4FCE1C61FBBBBAC4B09DE /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		R3MT5ST6TS7A1B2C3D4E5H0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		A60000000000000000000002 /* Sources */ = {
+		R3MT5ST6TS7A1B2C3D4E5G8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10000000000000000000001 /* SkincareTrackerApp.swift in Sources */,
-				A10000000000000000000002 /* ContentView.swift in Sources */,
-				A10000000000000000000003 /* ProductsView.swift in Sources */,
-				A10000000000000000000004 /* AddProductView.swift in Sources */,
-				A10000000000000000000005 /* ProductDetailView.swift in Sources */,
-				A10000000000000000000006 /* EditProductView.swift in Sources */,
-				A10000000000000000000007 /* RoutinesView.swift in Sources */,
-				A10000000000000000000008 /* EditRoutineView.swift in Sources */,
-				A10000000000000000000009 /* TodayView.swift in Sources */,
-				A1000000000000000000000A /* PutOffSheetView.swift in Sources */,
-				A1000000000000000000000B /* ScheduleView.swift in Sources */,
-				A1000000000000000000000C /* RemindersView.swift in Sources */,
-				A1000000000000000000000D /* AppStore.swift in Sources */,
-				A1000000000000000000000E /* Product.swift in Sources */,
-				A1000000000000000000000F /* Routine.swift in Sources */,
-				A10000000000000000000010 /* ScheduleItem.swift in Sources */,
-				A10000000000000000000011 /* ReminderConfig.swift in Sources */,
+				R3MT5ST6TS7A1B2C3D4E5F6 /* AddProductTests.swift in Sources */,
+				R3MT5ST6TS7A1B2C3D4E5F8 /* CycleTests.swift in Sources */,
+				R3MT5ST6TS7A1B2C3D4E5G0 /* ReminderServiceTests.swift in Sources */,
+				R3MT5ST6TS7A1B2C3D4E5G2 /* ViewRenderingTests.swift in Sources */,
+				I4N5G6R7E8D9I0E1N2T3A5 /* IngredientTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AEE82688B0B1C267584DF086 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A58769D6AF2311B1B09CEAB8 /* AddProductView.swift in Sources */,
+				01A870D9AFBFA6C8D2C07458 /* AppColors.swift in Sources */,
+				7D6AA3C9C1AE9B0EDECBBBB1 /* AppStore.swift in Sources */,
+				4465B7916BC3337481DF9A85 /* ContentView.swift in Sources */,
+				4AFCCDF488578343A9EA87DF /* CycleView.swift in Sources */,
+				AABBCCDDEEFF112233445566 /* AddToCycleSheet.swift in Sources */,
+				CD3D8D2F436141ED8FC420B4 /* EditProductView.swift in Sources */,
+				I1N2C3I4I5N6G7R8E9D0E1 /* INCIIngredients.swift in Sources */,
+				I5N6P7U8T9S0A1N2I3T4I6 /* InputSanitizer.swift in Sources */,
+				9534495B6281DE51194DCBFB /* Product.swift in Sources */,
+				P1C2A3T4E5G6O7R8Y9ABCDEF /* ProductCategory.swift in Sources */,
+				D86A50A7F0413087D59261DE /* ProductDetailView.swift in Sources */,
+				713D831DA5728E9DEB40202B /* ProductsView.swift in Sources */,
+				3E47B9FA2CC3E3645844DBA3 /* PutOffSheetView.swift in Sources */,
+				50D4C32BA908C4E6F7C85868 /* ReminderConfig.swift in Sources */,
+				75EE04963A079A11531017EE /* RemindersView.swift in Sources */,
+				O1N2B3O4A5R6D7I8N9G001 /* OnboardingView.swift in Sources */,
+				H1K2S3RV4CE5E6A7B8C9D0 /* HealthKitService.swift in Sources */,
+				I2N3G4R5E6D7I8E9N0T1A2 /* IngredientLabelScanner.swift in Sources */,
+				I3M4A5G6E7P8I9C0K1E2R3 /* ImagePickerView.swift in Sources */,
+				R3M4N5DR6SV7CE8F9A0B1C2 /* ReminderService.swift in Sources */,
+				B9DD39B8B4E85E381FDA8A38 /* Routine.swift in Sources */,
+				8D37D5C205779F9D50BDDCF6 /* SavedBannerTrigger.swift in Sources */,
+				985D0CAD9A464C6363E59C08 /* ScheduleItem.swift in Sources */,
+				FC8C798F93A105648A1727FF /* ScheduleView.swift in Sources */,
+				52EEAAF9DF6E84DFD152C350 /* SkincareTrackerApp.swift in Sources */,
+				E3AB67C5D50261FCDACAB3B2 /* TodayView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXFrameworksBuildPhase section */
+		R3MT5ST6TS7A1B2C3D4E5G9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				R3MT5ST6TS7A1B2C3D4E5H2 /* XCTest.framework in Frameworks */,
+				R3MT5ST6TS7A1B2C3D4E5H3 /* SkincareTracker.app in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		R3MT5ST6TS7A1B2C3D4E5H1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A7FA437BB0024D46D3EC059A /* SkincareTracker */;
+			targetProxy = R3MT5ST6TS7A1B2C3D4E5H4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXContainerItemProxy section */
+		R3MT5ST6TS7A1B2C3D4E5H4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E96D3615280B518EEE99F4AE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A7FA437BB0024D46D3EC059A;
+			remoteInfo = SkincareTracker;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin XCBuildConfiguration section */
-		A90000000000000000000001 /* Debug */ = {
+		2C72AAF84A648330BD8497FB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -296,14 +441,13 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
 					"$(inherited)",
+					"DEBUG=1",
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -311,23 +455,46 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
-		A90000000000000000000002 /* Release */ = {
+		57B5FCC4DEF1E79191634679 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SkincareTracker/SkincareTracker.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = T2BMJMA7LN;
+				INFOPLIST_FILE = SkincareTracker/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.skincaretracker.app;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6F5186153BE9EFC411DCF998 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -357,112 +524,124 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
-		A90000000000000000000003 /* Debug */ = {
+		CEE188BE44F357C0933A3DCF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "";
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = NO;
+				CODE_SIGN_ENTITLEMENTS = SkincareTracker/SkincareTracker.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = T2BMJMA7LN;
 				INFOPLIST_FILE = SkincareTracker/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.skincaretracker.app;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		R3MT5ST6TS7A1B2C3D4E5H6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = T2BMJMA7LN;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.skincaretracker.app.SkincareTrackerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SkincareTracker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SkincareTracker";
 			};
 			name = Debug;
 		};
-		A90000000000000000000004 /* Release */ = {
+		R3MT5ST6TS7A1B2C3D4E5H7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "";
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = SkincareTracker/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				DEVELOPMENT_TEAM = T2BMJMA7LN;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.skincaretracker.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.skincaretracker.app.SkincareTrackerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SkincareTracker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SkincareTracker";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A70000000000000000000001 /* Build configuration list for PBXProject "SkincareTracker" */ = {
+		4B35DA8ACCFB7890A8EE0B29 /* Build configuration list for PBXProject "SkincareTracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A90000000000000000000001 /* Debug */,
-				A90000000000000000000002 /* Release */,
+				2C72AAF84A648330BD8497FB /* Debug */,
+				6F5186153BE9EFC411DCF998 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
-		A70000000000000000000002 /* Build configuration list for PBXNativeTarget "SkincareTracker" */ = {
+		FE2324A27E2CB6AD8051F158 /* Build configuration list for PBXNativeTarget "SkincareTracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A90000000000000000000003 /* Debug */,
-				A90000000000000000000004 /* Release */,
+				57B5FCC4DEF1E79191634679 /* Debug */,
+				CEE188BE44F357C0933A3DCF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
+		};
+		R3MT5ST6TS7A1B2C3D4E5G7 /* Build configuration list for PBXNativeTarget "SkincareTrackerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				R3MT5ST6TS7A1B2C3D4E5H6 /* Debug */,
+				R3MT5ST6TS7A1B2C3D4E5H7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = A80000000000000000000001 /* Project object */;
+	rootObject = E96D3615280B518EEE99F4AE /* Project object */;
 }

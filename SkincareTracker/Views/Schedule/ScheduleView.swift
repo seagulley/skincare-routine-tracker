@@ -1,8 +1,3 @@
-//
-//  ScheduleView.swift
-//  SkincareTracker
-//
-
 import SwiftUI
 
 struct ScheduleView: View {
@@ -25,21 +20,26 @@ struct ScheduleView: View {
                     Section {
                         ForEach(group.items) { item in
                             ScheduleRowView(item: item)
+                                .listRowBackground(AppColors.rowBackground)
                         }
                     } header: {
                         Text(formatDate(group.date))
                             .font(.headline)
+                            .foregroundStyle(AppColors.sectionHeader)
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(AppColors.background)
             .navigationTitle("Schedule")
             .overlay {
                 if store.scheduleItems.isEmpty {
                     ContentUnavailableView(
                         "No Schedule Yet",
                         systemImage: "calendar.badge.clock",
-                        description: Text("Add products and set up your morning/night routines to see your schedule.")
+                        description: Text("Add products and set up your cycle to see your schedule.")
                     )
+                    .foregroundStyle(AppColors.textSecondary)
                 }
             }
         }
@@ -67,16 +67,12 @@ struct ScheduleRowView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(item.productName)
                     .font(.headline)
+                    .foregroundStyle(AppColors.textPrimary)
                 Text(item.routineType.rawValue)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppColors.textSecondary)
             }
             Spacer()
-            if let product = item.product {
-                Text(product.frequencyDescription)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
         }
         .padding(.vertical, 4)
     }

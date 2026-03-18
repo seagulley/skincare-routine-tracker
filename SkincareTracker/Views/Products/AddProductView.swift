@@ -7,62 +7,90 @@ import SwiftUI
 
 struct AddProductView: View {
     @EnvironmentObject var store: AppStore
+    @EnvironmentObject var savedBanner: SavedBannerTrigger
     @Environment(\.dismiss) private var dismiss
-    
+
     @State private var name = ""
     @State private var ingredientsText = ""
-    @State private var frequencyDays = 1
-    @State private var morning = true
-    @State private var night = true
-    @State private var excludedProductIds: Set<UUID> = []
-    
-    private var otherProducts: [Product] {
-        store.products
-    }
-    
+    @State private var selectedCategoryId: String = "other"
+    @State private var showScanSourcePicker = false
+    @State private var imagePickerSource: ImagePickerSource?
+    @State private var isScanning = false
+    @State private var ingredientErrorMessage: String?
+
     var body: some View {
         NavigationStack {
             Form {
                 Section("Product") {
                     TextField("Product name", text: $name)
+                        .foregroundStyle(AppColors.textPrimary)
+                        .listRowBackground(AppColors.rowBackground)
+                    Picker("Category", selection: $selectedCategoryId) {
+                        ForEach(ProductCategory.forPicker) { category in
+                            Text(category.name).tag(category.id)
+                        }
+                    }
+                    .foregroundStyle(AppColors.textPrimary)
+                    .listRowBackground(AppColors.rowBackground)
                 }
-                
+
                 Section("Ingredients") {
                     TextField("Comma-separated ingredients (e.g. Niacinamide, Hyaluronic Acid)", text: $ingredientsText, axis: .vertical)
                         .lineLimit(3...6)
-                }
-                
-                Section("Frequency") {
-                    Stepper("Use every \(frequencyDays) day(s)", value: $frequencyDays, in: 1...30)
-                }
-                
-                Section {
-                    Toggle("Morning routine", isOn: $morning)
-                    Toggle("Night routine", isOn: $night)
-                } header: {
-                    Text("Use in")
-                } footer: {
-                    Text("Choose which routines this product belongs to.")
-                }
-                
-                if !otherProducts.isEmpty {
-                    Section {
-                        ForEach(otherProducts) { other in
-                            Toggle(other.name, isOn: Binding(
-                                get: { excludedProductIds.contains(other.id) },
-                                set: { isOn in
-                                    if isOn { excludedProductIds.insert(other.id) }
-                                    else { excludedProductIds.remove(other.id) }
-                                }
-                            ))
-                        }
-                    } header: {
-                        Text("Never use with")
-                    } footer: {
-                        Text("These products will be scheduled on different days so they never appear together.")
+                        .foregroundStyle(AppColors.textPrimary)
+                        .listRowBackground(AppColors.rowBackground)
+                    Button {
+                        showScanSourcePicker = true
+                    } label: {
+                        Label("Scan label", systemImage: "camera.viewfinder")
+                            .foregroundStyle(AppColors.accent)
                     }
+                    .listRowBackground(AppColors.rowBackground)
                 }
             }
+            .confirmationDialog("Scan ingredients", isPresented: $showScanSourcePicker) {
+                Button("Take Photo") {
+                    imagePickerSource = ImagePickerSource(sourceType: .camera)
+                }
+                Button("Choose from Library") {
+                    imagePickerSource = ImagePickerSource(sourceType: .photoLibrary)
+                }
+                Button("Cancel", role: .cancel) {
+                    imagePickerSource = nil
+                }
+            } message: {
+                Text("Capture or select a photo of the ingredient list on your product label.")
+            }
+            .fullScreenCover(item: $imagePickerSource) { source in
+                ImagePickerView(sourceType: source.sourceType, onImagePicked: { image in
+                    imagePickerSource = nil
+                    Task { await scanImage(image) }
+                }, onCancel: {
+                    imagePickerSource = nil
+                })
+            }
+            .overlay {
+                if isScanning {
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+                    ProgressView("Scanning…")
+                        .progressViewStyle(.circular)
+                        .tint(.white)
+                        .scaleEffect(1.2)
+                }
+            }
+            .alert("Invalid Input", isPresented: Binding(
+                get: { ingredientErrorMessage != nil },
+                set: { if !$0 { ingredientErrorMessage = nil } }
+            )) {
+                Button("OK") { ingredientErrorMessage = nil }
+            } message: {
+                if let msg = ingredientErrorMessage {
+                    Text(msg)
+                }
+            }
+            .scrollContentBackground(.hidden)
+            .background(AppColors.background)
             .navigationTitle("Add Product")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -81,32 +109,44 @@ struct AddProductView: View {
         }
     }
     
-    private func saveProduct() {
-        let ingredientNames = ingredientsText
-            .split(separator: ",")
-            .compactMap { part -> String? in
-                let trimmed = part.trimmingCharacters(in: .whitespaces)
-                return trimmed.isEmpty ? nil : String(trimmed)
+    private func scanImage(_ image: UIImage) async {
+        isScanning = true
+        defer { isScanning = false }
+        guard let text = await IngredientLabelScanner.extractText(from: image) else { return }
+        let normalized = INCIIngredients.normalizeForParsing(text)
+        await MainActor.run {
+            if ingredientsText.isEmpty {
+                ingredientsText = normalized
+            } else {
+                ingredientsText += ", " + normalized
             }
-        
-        var routineTypes: Set<RoutineType> = []
-        if morning { routineTypes.insert(.morning) }
-        if night { routineTypes.insert(.night) }
-        if routineTypes.isEmpty { routineTypes = [.morning, .night] }
-        
-        let product = Product(
-            name: name,
-            ingredientNames: ingredientNames,
-            frequencyDays: frequencyDays,
-            routineTypes: routineTypes,
-            excludedProductIds: excludedProductIds
-        )
-        store.addProduct(product)
-        dismiss()
+        }
+    }
+
+    private func saveProduct() {
+        if let nameError = InputSanitizer.validateProductName(name) {
+            ingredientErrorMessage = nameError
+            return
+        }
+
+        switch INCIIngredients.parseValidated(ingredientsText) {
+        case .success(let ingredients):
+            let product = Product(
+                name: name,
+                ingredients: ingredients,
+                categoryId: selectedCategoryId
+            )
+            store.addProduct(product)
+            savedBanner.show()
+            dismiss()
+        case .failure(let error):
+            ingredientErrorMessage = error.localizedDescription
+        }
     }
 }
 
 #Preview {
     AddProductView()
         .environmentObject(AppStore())
+        .environmentObject(SavedBannerTrigger())
 }

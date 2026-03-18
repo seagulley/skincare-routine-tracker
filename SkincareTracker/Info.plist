@@ -4,8 +4,6 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>CFBundleDisplayName</key>
-	<string>Skincare Tracker</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -20,30 +18,24 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>UIApplicationSceneManifest</key>
-	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
-	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Skincare Tracker uses the camera to scan ingredient lists on product labels.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Skincare Tracker needs photo library access to scan ingredient lists from product label photos.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Skincare Tracker needs calendar access to schedule reminders for your skincare routine.</string>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>Skincare Tracker sends reminders for when to apply your skincare products.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Skincare Tracker uses your sleep data to remind you 1 hour before bedtime for your night routine.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict>
-		<key>UIColorName</key>
-		<string>LaunchScreenBackground</string>
+		<key>backgroundColor</key>
+		<string>#F5F5F5</string>
 	</dict>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
 </dict>
 </plist>
