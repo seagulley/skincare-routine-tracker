@@ -28,6 +28,11 @@ final class AppStore: ObservableObject {
         products.sorted { $0.name < $1.name }
     }
 
+    /// Products for the Products tab: cycle products first (in cycle order), then rest alphabetically.
+    var productsForListView: [Product] {
+        productsInCycleOrdered + productsNotInCycle
+    }
+
     /// Products that have been added to the cycle. Sorted by name.
     var productsInCycle: [Product] {
         products.filter { cycleProductOrder.contains($0.id) }.sorted { $0.name < $1.name }

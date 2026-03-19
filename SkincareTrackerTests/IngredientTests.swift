@@ -103,10 +103,10 @@ final class INCIIngredientsTests: XCTestCase {
 
     // MARK: - normalizeForParsing
 
-    func testNormalizeForParsing_replacesNewlinesWithCommas() throws {
-        let input = "Water\nGlycerin\nNiacinamide"
+    func testNormalizeForParsing_newlineWithoutComma_isLineContinuation() throws {
+        let input = "sodium\nmethyl cocoyl taurate, Glycerin"
         let result = INCIIngredients.normalizeForParsing(input)
-        XCTAssertEqual(result, "Water, Glycerin, Niacinamide")
+        XCTAssertEqual(result, "sodium methyl cocoyl taurate, Glycerin")
     }
 
     func testNormalizeForParsing_replacesSemicolonsWithCommas() throws {
@@ -116,11 +116,34 @@ final class INCIIngredientsTests: XCTestCase {
     }
 
     func testNormalizeForParsing_parseAfterNormalize_producesCorrectIngredients() throws {
-        let ocrStyleText = "Aqua\nGlycerin\nNiacinamide\nHyaluronic Acid"
+        let ocrStyleText = "Aqua,\nGlycerin,\nNiacinamide,\nHyaluronic Acid"
         let normalized = INCIIngredients.normalizeForParsing(ocrStyleText)
         let ingredients = INCIIngredients.parse(normalized)
         let names = ingredients.map(\.name)
         XCTAssertEqual(names, ["Aqua", "Glycerin", "Niacinamide", "Hyaluronic Acid"])
+    }
+
+    func testNormalizeForParsing_stripsIngredientsHeader() throws {
+        let ocrWithHeader = "INGREDIENTS\nAqua, Glycerin, Niacinamide"
+        let result = INCIIngredients.normalizeForParsing(ocrWithHeader)
+        XCTAssertFalse(result.lowercased().contains("ingredients"))
+        let ingredients = INCIIngredients.parse(result)
+        XCTAssertEqual(ingredients.map(\.name), ["Aqua", "Glycerin", "Niacinamide"])
+    }
+
+    func testNormalizeForParsing_lineContinuation_sodiumMethyl() throws {
+        // No comma before newline → line wrap
+        let input = "Aqua, Glycerin, sodium\nmethyl cocoyl taurate, Niacinamide"
+        let result = INCIIngredients.normalizeForParsing(input)
+        XCTAssertTrue(result.contains("sodium methyl cocoyl taurate"), "Expected 'sodium methyl cocoyl taurate' as one ingredient")
+    }
+
+    func testNormalizeForParsing_commaAtEOL_noDoubleComma() throws {
+        let input = "Aqua, niacinamide,\nGlycerin"
+        let result = INCIIngredients.normalizeForParsing(input)
+        XCTAssertFalse(result.contains(",,"), "Should not produce double comma")
+        let ingredients = INCIIngredients.parse(result)
+        XCTAssertEqual(ingredients.map(\.name), ["Aqua", "Niacinamide", "Glycerin"])
     }
 
     func testParse_waterAliases() throws {

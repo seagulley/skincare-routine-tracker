@@ -259,11 +259,37 @@ enum INCIIngredients {
     }
 
     /// Normalizes OCR or pasted text (newlines, semicolons) to comma-separated form for parsing.
+    /// Strips common label headers like "INGREDIENTS" that OCR often captures.
+    /// - Newline after comma = delimiter between ingredients
+    /// - Newline without comma = line wrap (ingredient name continues on next line)
     static func normalizeForParsing(_ text: String) -> String {
-        text
-            .replacingOccurrences(of: "\n", with: ", ")
-            .replacingOccurrences(of: ";", with: ", ")
-            .replacingOccurrences(of: "  ", with: " ")
+        var result = text
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\r", with: "\n")
+        // Comma + newline = delimiter between ingredients
+        result = result.replacingOccurrences(of: ",\\s*\\n", with: ", ", options: .regularExpression)
+        // Newline without comma = line wrap (ingredient continues on next line)
+        result = result.replacingOccurrences(of: "\n", with: " ")
+        result = result.replacingOccurrences(of: ";", with: ", ")
+        // Collapse multiple commas and normalize spacing
+        while result.contains(",,") || result.contains(", ,") {
+            result = result.replacingOccurrences(of: ", ,", with: ",")
+            result = result.replacingOccurrences(of: ",,", with: ",")
+        }
+        result = result.replacingOccurrences(of: "  ", with: " ")
+        // Remove common label headers that OCR captures (case-insensitive)
+        let headersToStrip = ["INGREDIENTS:", "INGREDIENTS", "INGREDIENT LIST:", "INGREDIENT LIST"]
+        for header in headersToStrip {
+            if let range = result.range(of: header, options: .caseInsensitive) {
+                result.removeSubrange(range)
+                result = result.trimmingCharacters(in: .whitespaces)
+                if result.hasPrefix(",") || result.hasPrefix(":") {
+                    result = String(result.dropFirst()).trimmingCharacters(in: .whitespaces)
+                }
+                break
+            }
+        }
+        return result
     }
 
     /// Converts a single raw name (without concentration) to its INCI form.

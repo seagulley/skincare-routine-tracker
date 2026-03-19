@@ -36,9 +36,11 @@ struct CycleView: View {
             .background(AppColors.background)
             .navigationTitle("Skincare Cycle")
             .sheet(isPresented: $showAddProduct) {
-                AddToCycleSheet()
-                    .environmentObject(store)
-                    .environmentObject(savedBanner)
+                AddToCycleSheet(onProductAdded: { product in
+                    selectedProductId = product.id
+                })
+                .environmentObject(store)
+                .environmentObject(savedBanner)
             }
             .confirmationDialog("Remove from routine?", isPresented: Binding(
                 get: { productToRemove != nil },
@@ -134,6 +136,7 @@ struct CycleView: View {
                 .buttonStyle(.bordered)
                 .tint(isProductsListEditing ? AppColors.rowBackground : AppColors.accentLight)
                 Button {
+                    expandedDayIndex = nil
                     showAddProduct = true
                 } label: {
                     Label("Add", systemImage: "plus")
@@ -167,7 +170,7 @@ struct CycleView: View {
                             onDelete: { productToRemove = product }
                         )
                         .listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
+                        .listRowBackground(AppColors.surface)
                         .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                     }
                     .onMove { store.moveProductInCycleOrder(from: $0, to: $1) }
@@ -177,6 +180,7 @@ struct CycleView: View {
                 .scrollContentBackground(.hidden)
                 .scrollDisabled(true)
                 .frame(minHeight: CGFloat(store.productsInCycleOrdered.count) * 52)
+                .padding(.bottom, 8)
             }
             
             if selectedProductId != nil {
@@ -313,7 +317,7 @@ struct CycleView: View {
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(AppColors.textSecondary)
 
-            FlowLayout(spacing: 12) {
+            VStack(alignment: .leading, spacing: 6) {
                 ForEach(store.productsInCycleOrdered) { product in
                     HStack(spacing: 6) {
                         if let color = store.productColor(for: product) {
@@ -370,7 +374,7 @@ struct CycleView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(12)
             } else {
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: 8) {
                     ForEach(products) { product in
                         HStack(spacing: 8) {
                             if let color = store.productColor(for: product) {
@@ -382,6 +386,7 @@ struct CycleView: View {
                                 .font(.caption)
                                 .foregroundStyle(AppColors.textPrimary)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -441,7 +446,7 @@ private struct ProductRow: View {
             .background(isSelected ? AppColors.rowSelected : AppColors.rowBackground)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .strokeBorder(isSelected ? AppColors.accent : Color.clear, lineWidth: 2)
+                    .strokeBorder(isSelected && !isReorderMode ? AppColors.accent : Color.clear, lineWidth: 2)
             )
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
@@ -521,54 +526,6 @@ private struct CycleSlotCell: View {
                 .strokeBorder(isSelected ? AppColors.accent : (isDayExpanded ? (routineType == .morning ? AppColors.morningAccent : AppColors.nightAccent) : Color.clear), lineWidth: 2)
         )
         .clipShape(RoundedRectangle(cornerRadius: 12))
-    }
-}
-
-// MARK: - Flow Layout
-
-private struct FlowLayout: Layout {
-    var spacing: CGFloat = 8
-    
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let result = arrange(subviews: subviews, proposal: proposal)
-        return result.size
-    }
-    
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        let result = arrange(subviews: subviews, proposal: proposal)
-        for (index, subview) in subviews.enumerated() {
-            let point = CGPoint(
-                x: bounds.minX + result.positions[index].x,
-                y: bounds.minY + result.positions[index].y
-            )
-            subview.place(at: point, anchor: .topLeading, proposal: .unspecified)
-        }
-    }
-    
-    private func arrange(subviews: Subviews, proposal: ProposedViewSize) -> (size: CGSize, positions: [CGPoint]) {
-        let proposedWidth = proposal.width ?? .infinity
-        let maxWidth: CGFloat = proposedWidth.isFinite ? proposedWidth : 400
-        var positions: [CGPoint] = []
-        var x: CGFloat = 0
-        var y: CGFloat = 0
-        var rowHeight: CGFloat = 0
-        
-        for subview in subviews {
-            let size = subview.sizeThatFits(.unspecified)
-            let w = size.width.isFinite ? size.width : 0
-            let h = size.height.isFinite ? size.height : 0
-            if x + w > maxWidth && x > 0 {
-                x = 0
-                y += rowHeight + spacing
-                rowHeight = 0
-            }
-            positions.append(CGPoint(x: x, y: y))
-            rowHeight = max(rowHeight, h)
-            x += w + spacing
-        }
-        
-        let totalHeight = (y + rowHeight).isFinite ? (y + rowHeight) : 0
-        return (CGSize(width: maxWidth, height: totalHeight), positions)
     }
 }
 

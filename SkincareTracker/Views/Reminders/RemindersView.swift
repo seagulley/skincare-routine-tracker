@@ -140,10 +140,10 @@ struct ReminderRowView: View {
             Text(config.routineType.rawValue + " Routine")
                 .foregroundStyle(AppColors.sectionHeader)
         } footer: {
-            if useHealthWakeTime && isMorningRoutine {
+            if healthKitAvailable && useHealthWakeTime && isMorningRoutine {
                 Text("Reminder fires when your Health sleep routine ends (when you wake up).")
                     .foregroundStyle(AppColors.textSecondary)
-            } else if useHealthBedtime && isNightRoutine {
+            } else if healthKitAvailable && useHealthBedtime && isNightRoutine {
                 Text("Reminder fires 1 hour before your typical bedtime from the Health app.")
                     .foregroundStyle(AppColors.textSecondary)
             } else {
@@ -178,14 +178,33 @@ struct TimePickerSheet: View {
     @Binding var minute: Int
     let onDismiss: () -> Void
 
+    private var date: Binding<Date> {
+        Binding(
+            get: {
+                var components = DateComponents()
+                components.hour = hour
+                components.minute = minute
+                return Calendar.current.date(from: components) ?? Date()
+            },
+            set: { newDate in
+                let components = Calendar.current.dateComponents([.hour, .minute], from: newDate)
+                hour = components.hour ?? 0
+                minute = components.minute ?? 0
+            }
+        )
+    }
+
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    Stepper("Hour: \(hour)", value: $hour, in: 0...23)
-                    Stepper("Minute: \(minute)", value: $minute, in: 0...59)
+                    DatePicker("Time", selection: date, displayedComponents: .hourAndMinute)
+                        .labelsHidden()
+                        .listRowBackground(AppColors.rowBackground)
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(AppColors.background)
             .navigationTitle("Reminder Time")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
