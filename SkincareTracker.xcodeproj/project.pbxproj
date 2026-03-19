@@ -41,8 +41,10 @@
 		R3MT5ST6TS7A1B2C3D4E5G0 /* ReminderServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = R3MT5ST6TS7A1B2C3D4E5G1 /* ReminderServiceTests.swift */; };
 		R3MT5ST6TS7A1B2C3D4E5G2 /* ViewRenderingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = R3MT5ST6TS7A1B2C3D4E5G3 /* ViewRenderingTests.swift */; };
 		I4N5G6R7E8D9I0E1N2T3A5 /* IngredientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = I4N5G6R7E8D9I0E1N2T3A4 /* IngredientTests.swift */; };
+		H1K2A3C4C5E6S7S8T9E0S1 /* HealthKitAccessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = H1K2A3C4C5E6S7S8T9E0S2 /* HealthKitAccessTests.swift */; };
 		R3MT5ST6TS7A1B2C3D4E5H2 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = R3MT5ST6TS7A1B2C3D4E5H5 /* XCTest.framework */; };
 		R3MT5ST6TS7A1B2C3D4E5H3 /* SkincareTracker.app in Frameworks */ = {isa = PBXBuildFile; fileRef = 891956B70E0F834744305A1D /* SkincareTracker.app */; };
+		VI1EW2IN3SP4EC5T0R001 /* ViewInspector in Frameworks */ = {isa = PBXBuildFile; productRef = VI1EW2IN3SP4EC5T0R002 /* ViewInspector */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -82,6 +84,7 @@
 		R3MT5ST6TS7A1B2C3D4E5G1 /* ReminderServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderServiceTests.swift; sourceTree = "<group>"; };
 		R3MT5ST6TS7A1B2C3D4E5G3 /* ViewRenderingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewRenderingTests.swift; sourceTree = "<group>"; };
 		I4N5G6R7E8D9I0E1N2T3A4 /* IngredientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientTests.swift; sourceTree = "<group>"; };
+		H1K2A3C4C5E6S7S8T9E0S2 /* HealthKitAccessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitAccessTests.swift; sourceTree = "<group>"; };
 		R3MT5ST6TS7A1B2C3D4E5G4 /* SkincareTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkincareTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		R3MT5ST6TS7A1B2C3D4E5H5 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
@@ -124,6 +127,7 @@
 			isa = PBXGroup;
 			children = (
 				R3MT5ST6TS7A1B2C3D4E5F7 /* AddProductTests.swift */,
+				H1K2A3C4C5E6S7S8T9E0S2 /* HealthKitAccessTests.swift */,
 				I4N5G6R7E8D9I0E1N2T3A4 /* IngredientTests.swift */,
 				R3MT5ST6TS7A1B2C3D4E5F9 /* CycleTests.swift */,
 				R3MT5ST6TS7A1B2C3D4E5G1 /* ReminderServiceTests.swift */,
@@ -276,6 +280,9 @@
 				R3MT5ST6TS7A1B2C3D4E5H1 /* PBXTargetDependency */,
 			);
 			name = SkincareTrackerTests;
+			packageProductDependencies = (
+				VI1EW2IN3SP4EC5T0R002 /* ViewInspector */,
+			);
 			productName = SkincareTrackerTests;
 			productReference = R3MT5ST6TS7A1B2C3D4E5G4 /* SkincareTrackerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -298,6 +305,9 @@
 			);
 			mainGroup = 2E07F8DF82B5A8F237BB01F3;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				VI1EW2IN3SP4EC5T0R000 /* XCRemoteSwiftPackageReference "ViewInspector" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6515C00DDA42511F788357BC /* Products */;
 			projectDirPath = "";
@@ -336,6 +346,7 @@
 				R3MT5ST6TS7A1B2C3D4E5F8 /* CycleTests.swift in Sources */,
 				R3MT5ST6TS7A1B2C3D4E5G0 /* ReminderServiceTests.swift in Sources */,
 				R3MT5ST6TS7A1B2C3D4E5G2 /* ViewRenderingTests.swift in Sources */,
+				H1K2A3C4C5E6S7S8T9E0S1 /* HealthKitAccessTests.swift in Sources */,
 				I4N5G6R7E8D9I0E1N2T3A5 /* IngredientTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -384,6 +395,7 @@
 			files = (
 				R3MT5ST6TS7A1B2C3D4E5H2 /* XCTest.framework in Frameworks */,
 				R3MT5ST6TS7A1B2C3D4E5H3 /* SkincareTracker.app in Frameworks */,
+				VI1EW2IN3SP4EC5T0R001 /* ViewInspector in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -406,6 +418,25 @@
 			remoteInfo = SkincareTracker;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		VI1EW2IN3SP4EC5T0R000 /* XCRemoteSwiftPackageReference "ViewInspector" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/nalexn/ViewInspector";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		VI1EW2IN3SP4EC5T0R002 /* ViewInspector */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ViewInspector;
+			package = VI1EW2IN3SP4EC5T0R000 /* XCRemoteSwiftPackageReference "ViewInspector" */;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCBuildConfiguration section */
 		2C72AAF84A648330BD8497FB /* Debug */ = {

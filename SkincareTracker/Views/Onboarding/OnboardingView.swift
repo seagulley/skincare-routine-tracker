@@ -7,10 +7,22 @@
 
 import SwiftUI
 
+/// Optional override for Health access action. Used in tests to invoke the action directly without simulating a tap.
+private struct HealthAccessRequestActionKey: EnvironmentKey {
+    static let defaultValue: (() async -> Void)? = nil
+}
+extension EnvironmentValues {
+    var healthAccessRequestAction: (() async -> Void)? {
+        get { self[HealthAccessRequestActionKey.self] }
+        set { self[HealthAccessRequestActionKey.self] = newValue }
+    }
+}
+
 struct OnboardingView: View {
     @EnvironmentObject var store: AppStore
     @EnvironmentObject var reminderService: ReminderService
-    @EnvironmentObject var healthKitService: HealthKitService
+    @EnvironmentObject var healthKitService: HealthKitServiceBase
+    @Environment(\.healthAccessRequestAction) private var healthAccessRequestAction
 
     let onComplete: () -> Void
 
@@ -23,7 +35,7 @@ struct OnboardingView: View {
             VStack(spacing: 32) {
                 header
 
-                if HealthKitService.isAvailable {
+                if type(of: healthKitService).isAvailable {
                     healthSection
                 }
 
@@ -36,11 +48,6 @@ struct OnboardingView: View {
         }
         .background(AppColors.background)
         .interactiveDismissDisabled()
-        .onAppear {
-            if HealthKitService.isAvailable {
-                Task { await requestHealthAccess() }
-            }
-        }
     }
 
     private var header: some View {
@@ -81,7 +88,11 @@ struct OnboardingView: View {
             .clipShape(RoundedRectangle(cornerRadius: 16))
 
             Button {
-                Task { await requestHealthAccess() }
+                if let action = healthAccessRequestAction {
+                    Task { await action() }
+                } else {
+                    Task { await requestHealthAccess() }
+                }
             } label: {
                 HStack {
                     if isRequestingHealth {
@@ -98,6 +109,7 @@ struct OnboardingView: View {
                 .foregroundStyle(AppColors.textOnAccent)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
+            .accessibilityIdentifier("allowHealthAccess")
             .disabled(isRequestingHealth)
         }
     }
@@ -107,7 +119,7 @@ struct OnboardingView: View {
             HStack(spacing: 12) {
                 Image(systemName: "bell.badge.fill")
                     .font(.title2)
-                    .foregroundStyle(AppColors.textOnDark)
+                    .foregroundStyle(AppColors.textOnAccent)
                     .frame(width: 44, height: 44)
                     .background(AppColors.accent)
                     .clipShape(Circle())

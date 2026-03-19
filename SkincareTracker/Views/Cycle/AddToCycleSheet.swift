@@ -31,8 +31,6 @@ struct AddToCycleSheet: View {
                 Section {
                     ForEach(filteredProducts) { product in
                         Button {
-                            store.addProductToCycle(product)
-                            savedBanner.show()
                             onProductAdded?(product)
                             dismiss()
                         } label: {
@@ -235,7 +233,6 @@ private struct CreateProductAndAddToCycleSheet: View {
                 categoryId: selectedCategoryId
             )
             store.addProduct(product)
-            store.addProductToCycle(product)
             onCreated(product)
             dismiss()
         case .failure(let error):

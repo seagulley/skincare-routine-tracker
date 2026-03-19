@@ -13,7 +13,7 @@ struct ContentView: View {
     @StateObject private var store = AppStore()
     @StateObject private var savedBanner = SavedBannerTrigger()
     @StateObject private var reminderService = ReminderService()
-    @StateObject private var healthKitService = HealthKitService()
+    @StateObject private var healthKitService: HealthKitServiceBase = HealthKitService()
     @State private var showOnboarding = !OnboardingView.hasCompletedOnboarding
     @State private var selectedTab: AppTab = .today
 

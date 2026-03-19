@@ -528,7 +528,7 @@ final class SavedBannerTriggerTests: XCTestCase {
 final class HealthKitServiceTests: XCTestCase {
 
     func testIsAvailable_returnsBool() throws {
-        let result = HealthKitService.isAvailable
+        let result = HealthKitServiceBase.isAvailable
         XCTAssertTrue(result == true || result == false)
     }
 }

@@ -8,17 +8,23 @@
 import Foundation
 import HealthKit
 
-/// Fetches bedtime and wake time from Health app sleep data (in-bed samples).
-final class HealthKitService: ObservableObject {
-    private let healthStore = HKHealthStore()
-
-    /// Whether HealthKit is available on this device.
-    static var isAvailable: Bool {
+/// Base type for HealthKit access; enables injecting mocks in tests.
+open class HealthKitServiceBase: ObservableObject {
+    /// Whether HealthKit is available. Override in tests to return true.
+    open class var isAvailable: Bool {
         HKHealthStore.isHealthDataAvailable()
     }
+    open func requestAuthorization() async throws { fatalError("subclass must implement") }
+    open func fetchTypicalBedtime() async -> (hour: Int, minute: Int)? { nil }
+    open func fetchTypicalWakeTime() async -> (hour: Int, minute: Int)? { nil }
+}
+
+/// Fetches bedtime and wake time from Health app sleep data (in-bed samples).
+final class HealthKitService: HealthKitServiceBase {
+    private let healthStore = HKHealthStore()
 
     /// Requests authorization to read sleep analysis. Call before fetching bedtime.
-    func requestAuthorization() async throws {
+    override func requestAuthorization() async throws {
         guard Self.isAvailable else { return }
         guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else { return }
         try await healthStore.requestAuthorization(toShare: [], read: [sleepType])
@@ -26,7 +32,7 @@ final class HealthKitService: ObservableObject {
 
     /// Returns typical bedtime (hour and minute) from recent in-bed samples, or nil if unavailable.
     /// Uses the average of the last 7 nights' in-bed start times.
-    func fetchTypicalBedtime() async -> (hour: Int, minute: Int)? {
+    override func fetchTypicalBedtime() async -> (hour: Int, minute: Int)? {
         guard Self.isAvailable else { return nil }
         guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else { return nil }
 
@@ -60,7 +66,7 @@ final class HealthKitService: ObservableObject {
 
     /// Returns typical wake time (hour and minute) from recent in-bed samples, or nil if unavailable.
     /// Uses the average of the last 7 nights' in-bed end times (when user gets out of bed).
-    func fetchTypicalWakeTime() async -> (hour: Int, minute: Int)? {
+    override func fetchTypicalWakeTime() async -> (hour: Int, minute: Int)? {
         guard Self.isAvailable else { return nil }
         guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else { return nil }
 

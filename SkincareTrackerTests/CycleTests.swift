@@ -54,6 +54,8 @@ final class CycleTests: XCTestCase {
         store.trySaveCycle(using: savedBanner)
 
         XCTAssertNotNil(store.cycleStartDate, "Should set cycleStartDate when cycle has assignments")
+        XCTAssertTrue(store.productsOnCycleSlot(dayIndex: 0, routineType: .morning).contains(product.id), "Saved cycle should preserve product on day 0 morning")
+        XCTAssertTrue(store.morningRoutine.productIds.contains(product.id), "Saved cycle should apply product to morning routine")
     }
 
     // MARK: - "Today" Day Selection (Set as today via context menu)
@@ -181,6 +183,8 @@ final class CycleTests: XCTestCase {
         store.saveCycle()
 
         XCTAssertNotNil(store.cycleStartDate, "cycleStartDate should be set after save")
+        XCTAssertTrue(store.productsOnCycleSlot(dayIndex: 0, routineType: .morning).contains(product.id), "Saved cycle should preserve product on day 0 morning")
+        XCTAssertTrue(store.morningRoutine.productIds.contains(product.id), "Saved cycle should apply product to morning routine")
     }
 
     func testSaveCycle_scheduleReflectsCycleAssignments() throws {
@@ -224,6 +228,8 @@ final class CycleTests: XCTestCase {
 
         store.saveCycle()
 
+        XCTAssertNotNil(store.cycleStartDate, "cycleStartDate should be set after save")
+        XCTAssertTrue(store.productsOnCycleSlot(dayIndex: 0, routineType: .morning).contains(product.id), "Saved cycle should preserve product on day 0 morning")
         XCTAssertTrue(store.morningRoutine.productIds.contains(product.id), "Product should be in morning routine after save")
     }
 
@@ -250,6 +256,8 @@ final class CycleTests: XCTestCase {
             startAfterFirstSave,
             "cycleStartDate should differ from first save (Day 1) since we set Day 3 as today"
         )
+        XCTAssertTrue(store.productsOnCycleSlot(dayIndex: 0, routineType: .morning).contains(product.id), "Saved cycle should preserve cycle assignments")
+        XCTAssertTrue(store.morningRoutine.productIds.contains(product.id), "Saved cycle should preserve routines")
     }
 
     // MARK: - Cycle Length

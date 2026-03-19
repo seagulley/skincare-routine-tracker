@@ -5,18 +5,30 @@
 
 import SwiftUI
 
+/// Optional callback when rescheduleReminders completes. Used in tests to await async work without sleep.
+private struct ReminderRescheduleCompleteKey: EnvironmentKey {
+    static let defaultValue: (() -> Void)? = nil
+}
+extension EnvironmentValues {
+    var reminderRescheduleComplete: (() -> Void)? {
+        get { self[ReminderRescheduleCompleteKey.self] }
+        set { self[ReminderRescheduleCompleteKey.self] = newValue }
+    }
+}
+
 struct RemindersView: View {
     @EnvironmentObject var store: AppStore
     @EnvironmentObject var reminderService: ReminderService
-    @EnvironmentObject var healthKitService: HealthKitService
+    @EnvironmentObject var healthKitService: HealthKitServiceBase
+    @Environment(\.reminderRescheduleComplete) private var onRescheduleComplete
 
     var body: some View {
         NavigationStack {
             List {
-                ForEach(RoutineType.allCases, id: \.self) { type in
+                ForEach(RoutineType.allCases, id: \.self) { routineType in
                     ReminderRowView(
-                        config: store.reminderConfig(for: type),
-                        healthKitAvailable: HealthKitService.isAvailable,
+                        config: store.reminderConfig(for: routineType),
+                        healthKitAvailable: Swift.type(of: healthKitService).isAvailable,
                         onSave: { config in
                             store.updateReminderConfig(config)
                             Task { await rescheduleReminders() }
@@ -29,7 +41,10 @@ struct RemindersView: View {
             .navigationTitle("Reminders")
             .listStyle(.insetGrouped)
             .onAppear {
-                Task { await rescheduleReminders() }
+                Task {
+                    await rescheduleReminders()
+                    onRescheduleComplete?()
+                }
             }
         }
     }
