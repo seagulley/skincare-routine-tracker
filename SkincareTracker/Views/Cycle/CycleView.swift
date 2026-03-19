@@ -24,12 +24,7 @@ struct CycleView: View {
                     cycleLengthSection
                     productsSection
                     dayGridSection
-                    if !store.productsInCycle.isEmpty {
-                        legendSection
-                    }
-                    if store.productsInCycle.isEmpty {
-                        instructionsSection
-                    }
+                    instructionsSection
                 }
                 .padding()
             }
@@ -37,6 +32,7 @@ struct CycleView: View {
             .navigationTitle("Skincare Cycle")
             .sheet(isPresented: $showAddProduct) {
                 AddToCycleSheet(onProductAdded: { product in
+                    store.addProductToCycle(product)
                     selectedProductId = product.id
                 })
                 .environmentObject(store)
@@ -62,6 +58,9 @@ struct CycleView: View {
                 }
             }
             .animation(.easeInOut(duration: 0.25), value: store.hasUnsavedCycleChanges)
+            .onDisappear {
+                store.cleanupUnassignedProductsFromCycle()
+            }
         }
     }
     
@@ -72,7 +71,7 @@ struct CycleView: View {
                 .foregroundStyle(AppColors.textPrimary)
             
             Slider(
-                value: Binding(
+                value: Binding<Double>(
                     get: { Double(store.cycleLength) },
                     set: { store.setCycleLength(Int($0.rounded())) }
                 ),
@@ -152,30 +151,30 @@ struct CycleView: View {
                             },
                             onDelete: { productToRemove = product }
                         )
-                        .confirmationDialog("Remove from routine?", isPresented: Binding(
-                            get: { productToRemove?.id == product.id },
-                            set: { if !$0 { productToRemove = nil } }
-                        )) {
-                            Button("Remove", role: .destructive) {
-                                if let p = productToRemove, p.id == product.id {
-                                    store.clearProductFromCycle(productId: p.id)
-                                    if selectedProductId == p.id {
-                                        selectedProductId = nil
-                                    }
-                                }
-                                productToRemove = nil
-                            }
-                            Button("Cancel", role: .cancel) {
-                                productToRemove = nil
-                            }
-                        } message: {
-                            Text("This will remove \"\(product.name)\" from your cycle.")
-                        }
                         .listRowSeparator(.hidden)
                         .listRowBackground(AppColors.surface)
                         .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                     }
                     .onMove { store.moveProductInCycleOrder(from: $0, to: $1) }
+                }
+                .confirmationDialog("Remove from routine?", isPresented: Binding<Bool>(
+                    get: { productToRemove != nil },
+                    set: { if !$0 { productToRemove = nil } }
+                )) {
+                    Button("Remove", role: .destructive) {
+                        if let p = productToRemove {
+                            store.clearProductFromCycle(productId: p.id)
+                            if selectedProductId == p.id {
+                                selectedProductId = nil
+                            }
+                        }
+                        productToRemove = nil
+                    }
+                    Button("Cancel", role: .cancel) {
+                        productToRemove = nil
+                    }
+                } message: {
+                    Text("This will remove \"\(productToRemove?.name ?? "")\" from your cycle.")
                 }
                 .environment(\.editMode, .constant(isProductsListEditing ? .active : .inactive))
                 .listStyle(.plain)
@@ -190,9 +189,6 @@ struct CycleView: View {
                     .font(.subheadline)
                     .foregroundStyle(AppColors.accent)
                     .frame(maxWidth: .infinity)
-                    // .padding(.vertical, 8)
-                    // .background(AppColors.accentLight)
-                    // .clipShape(RoundedRectangle(cornerRadius: 8))
             }
         }
         .padding()
@@ -309,33 +305,6 @@ struct CycleView: View {
                 }
             }
         }
-        .padding()
-        .background(AppColors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-    }
-    
-    private var legendSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Legend:")
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(AppColors.textSecondary)
-
-            VStack(alignment: .leading, spacing: 6) {
-                ForEach(store.productsInCycleOrdered) { product in
-                    HStack(spacing: 6) {
-                        if let color = store.productColor(for: product) {
-                            Circle()
-                                .fill(color)
-                                .frame(width: 12, height: 12)
-                        }
-                        Text(product.name)
-                            .font(.caption)
-                            .foregroundStyle(AppColors.textPrimary)
-                    }
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(AppColors.surface)
         .clipShape(RoundedRectangle(cornerRadius: 16))

@@ -33,19 +33,26 @@ final class AppStore: ObservableObject {
         productsInCycleOrdered + productsNotInCycle
     }
 
-    /// Products that have been added to the cycle. Sorted by name.
+    /// Product IDs that are assigned to at least one day slot.
+    private var assignedProductIds: Set<UUID> {
+        Set(cycleAssignments.values.flatMap { $0 })
+    }
+
+    /// Products that are in the cycle (assigned to at least one routine). Sorted by name.
     var productsInCycle: [Product] {
-        products.filter { cycleProductOrder.contains($0.id) }.sorted { $0.name < $1.name }
+        assignedProductIds.compactMap { product(by: $0) }.sorted { $0.name < $1.name }
     }
 
     /// Products in cycle ordered by cycleProductOrder (user's drag order).
+    /// Includes both assigned products and unassigned "staged" products (added this session, not yet assigned).
+    /// Unassigned products are removed when the user navigates away from CycleView.
     var productsInCycleOrdered: [Product] {
         cycleProductOrder.compactMap { product(by: $0) }
     }
 
-    /// Products not yet in the cycle. Sorted by name.
+    /// Products not yet assigned to any routine. Sorted by name.
     var productsNotInCycle: [Product] {
-        products.filter { !cycleProductOrder.contains($0.id) }.sorted { $0.name < $1.name }
+        products.filter { !assignedProductIds.contains($0.id) }.sorted { $0.name < $1.name }
     }
 
     /// Finds a product by its id.
@@ -251,6 +258,15 @@ final class AppStore: ObservableObject {
         cycleProductOrder.removeAll { $0 == productId }
     }
 
+    /// Removes from the cycle any products that are not assigned to a routine.
+    /// Called when the user navigates away from CycleView so unassigned "staged" products no longer appear.
+    func cleanupUnassignedProductsFromCycle() {
+        let toRemove = cycleProductOrder.filter { !assignedProductIds.contains($0) }
+        for productId in toRemove {
+            removeProductColor(productId: productId)
+        }
+    }
+
     /// Orders product IDs by cycleProductOrder; IDs not in order are appended in category order.
     private func orderProductIdsByCycleOrder(_ ids: [UUID]) -> [UUID] {
         let products = ids.compactMap { product(by: $0) }
@@ -419,7 +435,7 @@ final class AppStore: ObservableObject {
         hasUnsavedCycleChanges = true
     }
     
-    /// Removes a product from a day+routine slot.
+    /// Removes a product from a day+routine slot. Removes from cycle entirely if it had no other assignments.
     func unassignProductFromCycleSlot(productId: UUID, dayIndex: Int, routineType: RoutineType) {
         let key = cycleSlotKey(dayIndex: dayIndex, routineType: routineType)
         var assignments = cycleAssignments[key] ?? []
@@ -428,6 +444,10 @@ final class AppStore: ObservableObject {
             cycleAssignments.removeValue(forKey: key)
         } else {
             cycleAssignments[key] = assignments
+        }
+        // If product is no longer assigned to any slot, remove from cycle
+        if !assignedProductIds.contains(productId) {
+            removeProductColor(productId: productId)
         }
         hasUnsavedCycleChanges = true
     }

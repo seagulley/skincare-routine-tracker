@@ -50,9 +50,6 @@ enum AppColors {
 
     static let primaryAction = Color("AppAccent")
     static let primaryActionLight = Color("PrimaryActionLight")
-    static let secondaryButton = Color("TextTertiary")
-    static let putOff = Color("PutOff")
-    static let putOffLight = Color("PutOffLight")
 
     // MARK: - Lists & Rows
 
