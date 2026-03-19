@@ -36,6 +36,11 @@ struct OnboardingView: View {
         }
         .background(AppColors.background)
         .interactiveDismissDisabled()
+        .onAppear {
+            if HealthKitService.isAvailable {
+                Task { await requestHealthAccess() }
+            }
+        }
     }
 
     private var header: some View {

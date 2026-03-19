@@ -124,15 +124,20 @@ struct AddProductView: View {
     }
 
     private func saveProduct() {
-        if let nameError = InputSanitizer.validateProductName(name) {
+        let trimmedName = name.trimmingCharacters(in: .whitespaces)
+        if let nameError = InputSanitizer.validateProductName(trimmedName) {
             ingredientErrorMessage = nameError
+            return
+        }
+        if store.hasDuplicateProduct(name: trimmedName, categoryId: selectedCategoryId) {
+            ingredientErrorMessage = "A product named \"\(trimmedName)\" in this category already exists."
             return
         }
 
         switch INCIIngredients.parseValidated(ingredientsText) {
         case .success(let ingredients):
             let product = Product(
-                name: name,
+                name: trimmedName,
                 ingredients: ingredients,
                 categoryId: selectedCategoryId
             )

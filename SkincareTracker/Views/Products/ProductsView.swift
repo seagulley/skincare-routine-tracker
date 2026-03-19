@@ -13,14 +13,14 @@ struct ProductsView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(store.sortedProducts) { product in
+                ForEach(store.productsForListView) { product in
                     NavigationLink(destination: ProductDetailView(product: product)) {
                         ProductRowView(product: product)
                     }
                     .listRowBackground(AppColors.rowBackground)
                 }
                 .onDelete { offsets in
-                    store.deleteProducts(at: offsets, from: store.sortedProducts)
+                    store.deleteProducts(at: offsets, from: store.productsForListView)
                 }
             }
             .scrollContentBackground(.hidden)

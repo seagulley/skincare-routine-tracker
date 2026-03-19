@@ -10,7 +10,6 @@ import SwiftUI
 struct TodayView: View {
     @EnvironmentObject var store: AppStore
     @EnvironmentObject var savedBanner: SavedBannerTrigger
-    @State private var showPutOffPrompt: PutOffPromptItem?
 
     private let calendar = Calendar.current
 
@@ -48,15 +47,6 @@ struct TodayView: View {
             }
             .background(AppColors.background)
             .navigationTitle("Today's Routine")
-            .sheet(item: $showPutOffPrompt) { prompt in
-                PutOffSheetView(
-                    item: prompt.scheduleItem,
-                    routineType: prompt.routineType,
-                    onDismiss: { showPutOffPrompt = nil }
-                )
-                .environmentObject(store)
-                .environmentObject(savedBanner)
-            }
         }
     }
 
@@ -114,16 +104,14 @@ struct TodayView: View {
                 title: "Morning routine",
                 icon: "sun.max.fill",
                 products: morningProducts,
-                iconGradient: [AppColors.morning, Color(red: 255/255, green: 235/255, blue: 150/255)],
-                putOffRoutineType: .morning
+                iconGradient: [AppColors.morning, Color(red: 255/255, green: 235/255, blue: 150/255)]
             )
 
             routineCard(
                 title: "Night routine",
                 icon: "moon.fill",
                 products: nightProducts,
-                iconGradient: [AppColors.night, Color(red: 130/255, green: 170/255, blue: 230/255)],
-                putOffRoutineType: .night
+                iconGradient: [AppColors.night, Color(red: 130/255, green: 170/255, blue: 230/255)]
             )
         }
     }
@@ -132,8 +120,7 @@ struct TodayView: View {
         title: String,
         icon: String,
         products: [Product],
-        iconGradient: [Color],
-        putOffRoutineType: RoutineType
+        iconGradient: [Color]
     ) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 12) {
@@ -162,22 +149,15 @@ struct TodayView: View {
                     .foregroundStyle(AppColors.textTertiary)
             } else {
                 ForEach(products) { product in
-                    if let item = scheduleItem(for: product, routineType: putOffRoutineType) {
-                        TodayProductRow(
-                            item: item,
-                            onPutOff: { showPutOffPrompt = PutOffPromptItem(scheduleItem: item, routineType: putOffRoutineType) }
-                        )
-                    } else {
-                        HStack(spacing: 12) {
-                            if let color = store.productColor(for: product) {
-                                Circle()
-                                    .fill(color)
-                                    .frame(width: 8, height: 8)
-                            }
-                            Text(product.name)
-                                .font(.body)
-                                .foregroundStyle(AppColors.textPrimary)
+                    HStack(spacing: 12) {
+                        if let color = store.productColor(for: product) {
+                            Circle()
+                                .fill(color)
+                                .frame(width: 8, height: 8)
                         }
+                        Text(product.name)
+                            .font(.body)
+                            .foregroundStyle(AppColors.textPrimary)
                     }
                 }
             }
@@ -186,14 +166,6 @@ struct TodayView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(AppColors.surface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
-    }
-
-    private func scheduleItem(for product: Product, routineType: RoutineType) -> ScheduleItem? {
-        store.scheduleItems.first { item in
-            item.productId == product.id &&
-            calendar.isDate(item.date, inSameDayAs: todayStart) &&
-            item.routineType == routineType
-        }
     }
 
     @ViewBuilder
@@ -213,53 +185,6 @@ struct TodayView: View {
             .background(AppColors.accentLight)
             .clipShape(RoundedRectangle(cornerRadius: 16))
         }
-    }
-}
-
-// MARK: - Supporting Types
-
-struct PutOffPromptItem: Identifiable {
-    let id = UUID()
-    let scheduleItem: ScheduleItem
-    let routineType: RoutineType
-}
-
-struct TodayProductRow: View {
-    @EnvironmentObject var store: AppStore
-    let item: ScheduleItem
-    let onPutOff: () -> Void
-
-    private var product: Product? {
-        item.product ?? store.product(by: item.productId)
-    }
-
-    var body: some View {
-        HStack {
-            HStack(spacing: 12) {
-                if let product, let color = store.productColor(for: product) {
-                    Circle()
-                        .fill(color)
-                        .frame(width: 8, height: 8)
-                }
-                Text(item.productName)
-                    .font(.body)
-                    .foregroundStyle(AppColors.textPrimary)
-            }
-            Spacer()
-            Button {
-                onPutOff()
-            } label: {
-                Text("Put Off")
-                    .font(.caption)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(AppColors.putOffLight)
-                    .foregroundStyle(AppColors.putOff)
-                    .clipShape(Capsule())
-            }
-            .buttonStyle(.plain)
-        }
-        .padding(.vertical, 4)
     }
 }
 

@@ -67,7 +67,22 @@ struct ReminderRowView: View {
     @State private var minute: Int
     @State private var useHealthWakeTime: Bool
     @State private var useHealthBedtime: Bool
-    @State private var showTimePicker = false
+
+    private var timeDate: Binding<Date> {
+        Binding(
+            get: {
+                var components = DateComponents()
+                components.hour = hour
+                components.minute = minute
+                return Calendar.current.date(from: components) ?? Date()
+            },
+            set: { newDate in
+                let components = Calendar.current.dateComponents([.hour, .minute], from: newDate)
+                hour = components.hour ?? 0
+                minute = components.minute ?? 0
+            }
+        )
+    }
 
     init(config: ReminderConfig, healthKitAvailable: Bool, onSave: @escaping (ReminderConfig) -> Void) {
         self.config = config
@@ -122,28 +137,24 @@ struct ReminderRowView: View {
                 }
                 .listRowBackground(AppColors.rowBackground)
             } else {
-                Button {
-                    showTimePicker = true
-                } label: {
-                    HStack {
-                        Text("Time")
-                            .foregroundStyle(AppColors.textPrimary)
-                        Spacer()
-                        Text(String(format: "%d:%02d", hour, minute))
-                            .foregroundStyle(AppColors.textSecondary)
-                    }
+                HStack {
+                    Text("Time")
+                        .foregroundStyle(AppColors.textPrimary)
+                    Spacer()
+                    DatePicker("", selection: timeDate, displayedComponents: .hourAndMinute)
+                        .labelsHidden()
+                        .disabled(!isEnabled)
                 }
-                .disabled(!isEnabled)
                 .listRowBackground(AppColors.rowBackground)
             }
         } header: {
             Text(config.routineType.rawValue + " Routine")
                 .foregroundStyle(AppColors.sectionHeader)
         } footer: {
-            if useHealthWakeTime && isMorningRoutine {
+            if healthKitAvailable && useHealthWakeTime && isMorningRoutine {
                 Text("Reminder fires when your Health sleep routine ends (when you wake up).")
                     .foregroundStyle(AppColors.textSecondary)
-            } else if useHealthBedtime && isNightRoutine {
+            } else if healthKitAvailable && useHealthBedtime && isNightRoutine {
                 Text("Reminder fires 1 hour before your typical bedtime from the Health app.")
                     .foregroundStyle(AppColors.textSecondary)
             } else {
@@ -153,13 +164,6 @@ struct ReminderRowView: View {
         }
         .onChange(of: hour) { _, _ in saveConfig() }
         .onChange(of: minute) { _, _ in saveConfig() }
-        .sheet(isPresented: $showTimePicker) {
-            TimePickerSheet(
-                hour: $hour,
-                minute: $minute,
-                onDismiss: { showTimePicker = false }
-            )
-        }
     }
 
     private func saveConfig() {
@@ -170,32 +174,6 @@ struct ReminderRowView: View {
         newConfig.useHealthWakeTime = useHealthWakeTime
         newConfig.useHealthBedtime = useHealthBedtime
         onSave(newConfig)
-    }
-}
-
-struct TimePickerSheet: View {
-    @Binding var hour: Int
-    @Binding var minute: Int
-    let onDismiss: () -> Void
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    Stepper("Hour: \(hour)", value: $hour, in: 0...23)
-                    Stepper("Minute: \(minute)", value: $minute, in: 0...59)
-                }
-            }
-            .navigationTitle("Reminder Time")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") {
-                        onDismiss()
-                    }
-                }
-            }
-        }
     }
 }
 

@@ -12,6 +12,9 @@ struct AddToCycleSheet: View {
     @EnvironmentObject var savedBanner: SavedBannerTrigger
     @Environment(\.dismiss) private var dismiss
 
+    /// When set, CycleView will pre-select this product after the sheet closes.
+    var onProductAdded: ((Product) -> Void)?
+
     @State private var searchText = ""
     @State private var showCreateProduct = false
 
@@ -30,6 +33,7 @@ struct AddToCycleSheet: View {
                         Button {
                             store.addProductToCycle(product)
                             savedBanner.show()
+                            onProductAdded?(product)
                             dismiss()
                         } label: {
                             HStack(spacing: 12) {
@@ -76,8 +80,9 @@ struct AddToCycleSheet: View {
             }
             .sheet(isPresented: $showCreateProduct) {
                 CreateProductAndAddToCycleSheet(
-                    onCreated: {
+                    onCreated: { product in
                         savedBanner.show()
+                        onProductAdded?(product)
                         dismiss()
                     },
                     onCancel: { showCreateProduct = false }
@@ -103,7 +108,7 @@ private struct CreateProductAndAddToCycleSheet: View {
     @State private var isScanning = false
     @State private var ingredientErrorMessage: String?
 
-    let onCreated: () -> Void
+    let onCreated: (Product) -> Void
     let onCancel: () -> Void
 
     var body: some View {
@@ -217,17 +222,21 @@ private struct CreateProductAndAddToCycleSheet: View {
             ingredientErrorMessage = nameError
             return
         }
+        if store.hasDuplicateProduct(name: trimmedName, categoryId: selectedCategoryId) {
+            ingredientErrorMessage = "A product named \"\(trimmedName)\" in this category already exists."
+            return
+        }
 
         switch INCIIngredients.parseValidated(ingredientsText) {
         case .success(let ingredients):
             let product = Product(
-                name: name.trimmingCharacters(in: .whitespaces),
+                name: trimmedName,
                 ingredients: ingredients,
                 categoryId: selectedCategoryId
             )
             store.addProduct(product)
             store.addProductToCycle(product)
-            onCreated()
+            onCreated(product)
             dismiss()
         case .failure(let error):
             ingredientErrorMessage = error.localizedDescription
