@@ -46,6 +46,9 @@ final class ReminderService: ObservableObject {
             content.title = params.title
             content.body = params.body
             content.sound = .default
+            if products.isEmpty {
+                content.userInfo = ["noRoutine": true]
+            }
             var dateComponents = DateComponents()
             dateComponents.hour = params.hour
             dateComponents.minute = params.minute
@@ -66,14 +69,15 @@ final class ReminderService: ObservableObject {
         healthWakeTime: (hour: Int, minute: Int)?,
         healthBedtime: (hour: Int, minute: Int)?
     ) -> (body: String, title: String, hour: Int, minute: Int, identifier: String) {
-        let routineLabel = config.routineType.rawValue.lowercased()
-        let greeting = config.routineType == .morning ? "Good morning" : "Good night"
-        let productList = products.map(\.name).joined(separator: ", ")
-        let routinePart = productList.isEmpty
-            ? "Here is your \(routineLabel) skincare routine."
-            : "Here is your \(routineLabel) skincare routine: \(productList)."
-        let body = "\(greeting), \(routinePart) That's it."
-        let title = "\(config.routineType.rawValue) Skincare"
+        let body: String
+        if products.isEmpty {
+            body = config.routineType == .morning
+                ? "No skincare routine for this morning! Set up a routine in the app."
+                : "No skincare routine for tonight! Set up a routine in the app."
+        } else {
+            body = products.map(\.name).joined(separator: " > ") + "."
+        }
+        let title = "\(config.routineType.rawValue) Skincare Routine"
 
         let hour: Int
         let minute: Int

@@ -222,11 +222,15 @@ private struct CreateProductAndAddToCycleSheet: View {
             ingredientErrorMessage = nameError
             return
         }
+        if store.hasDuplicateProduct(name: trimmedName, categoryId: selectedCategoryId) {
+            ingredientErrorMessage = "A product named \"\(trimmedName)\" in this category already exists."
+            return
+        }
 
         switch INCIIngredients.parseValidated(ingredientsText) {
         case .success(let ingredients):
             let product = Product(
-                name: name.trimmingCharacters(in: .whitespaces),
+                name: trimmedName,
                 ingredients: ingredients,
                 categoryId: selectedCategoryId
             )

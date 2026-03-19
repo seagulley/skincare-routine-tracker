@@ -22,8 +22,8 @@ final class ReminderServiceTests: XCTestCase {
             healthBedtime: nil
         )
 
-        XCTAssertEqual(params.body, "Good morning, Here is your morning skincare routine: Cleanser, Serum. That's it.")
-        XCTAssertEqual(params.title, "Morning Skincare")
+        XCTAssertEqual(params.body, "Cleanser > Serum.")
+        XCTAssertEqual(params.title, "Morning Skincare Routine")
         XCTAssertEqual(params.hour, 8)
         XCTAssertEqual(params.minute, 30)
         XCTAssertEqual(params.identifier, "morning")
@@ -40,8 +40,8 @@ final class ReminderServiceTests: XCTestCase {
             healthBedtime: nil
         )
 
-        XCTAssertEqual(params.body, "Good morning, Here is your morning skincare routine: Moisturizer. That's it.")
-        XCTAssertEqual(params.title, "Morning Skincare")
+        XCTAssertEqual(params.body, "Moisturizer.")
+        XCTAssertEqual(params.title, "Morning Skincare Routine")
         XCTAssertEqual(params.hour, 7)
         XCTAssertEqual(params.minute, 0)
     }
@@ -56,7 +56,7 @@ final class ReminderServiceTests: XCTestCase {
             healthBedtime: nil
         )
 
-        XCTAssertEqual(params.body, "Good morning, Here is your morning skincare routine. That's it.")
+        XCTAssertEqual(params.body, "No skincare routine for this morning! Set up a routine in the app.")
         XCTAssertEqual(params.hour, 8)
         XCTAssertEqual(params.minute, 0)
     }
@@ -72,8 +72,8 @@ final class ReminderServiceTests: XCTestCase {
             healthBedtime: nil
         )
 
-        XCTAssertEqual(params.body, "Good night, Here is your night skincare routine: Cleanser, Retinol. That's it.")
-        XCTAssertEqual(params.title, "Night Skincare")
+        XCTAssertEqual(params.body, "Cleanser > Retinol.")
+        XCTAssertEqual(params.title, "Night Skincare Routine")
         XCTAssertEqual(params.hour, 21)
         XCTAssertEqual(params.minute, 0)
         XCTAssertEqual(params.identifier, "night")
@@ -98,7 +98,7 @@ final class ReminderServiceTests: XCTestCase {
             healthBedtime: (hour: 22, minute: 30)
         )
 
-        XCTAssertEqual(params.body, "Good night, Here is your night skincare routine. That's it.")
+        XCTAssertEqual(params.body, "No skincare routine for tonight! Set up a routine in the app.")
         XCTAssertEqual(params.hour, 21)
         XCTAssertEqual(params.minute, 30, "22:30 - 1hr = 21:30")
     }

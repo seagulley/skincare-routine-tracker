@@ -132,14 +132,19 @@ struct EditProductView: View {
     }
 
     private func saveChanges() {
-        if let nameError = InputSanitizer.validateProductName(name) {
+        let trimmedName = name.trimmingCharacters(in: .whitespaces)
+        if let nameError = InputSanitizer.validateProductName(trimmedName) {
             ingredientErrorMessage = nameError
+            return
+        }
+        if store.hasDuplicateProduct(name: trimmedName, categoryId: selectedCategoryId, excludingProductId: product.id) {
+            ingredientErrorMessage = "A product named \"\(trimmedName)\" in this category already exists."
             return
         }
 
         switch INCIIngredients.parseValidated(ingredientsText) {
         case .success(let ingredients):
-            store.updateProduct(productId: product.id, name: name, ingredients: ingredients, categoryId: selectedCategoryId)
+            store.updateProduct(productId: product.id, name: trimmedName, ingredients: ingredients, categoryId: selectedCategoryId)
             savedBanner.show()
             dismiss()
         case .failure(let error):

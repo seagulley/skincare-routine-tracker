@@ -42,27 +42,6 @@ struct CycleView: View {
                 .environmentObject(store)
                 .environmentObject(savedBanner)
             }
-            .confirmationDialog("Remove from routine?", isPresented: Binding(
-                get: { productToRemove != nil },
-                set: { if !$0 { productToRemove = nil } }
-            )) {
-                Button("Remove", role: .destructive) {
-                    if let product = productToRemove {
-                        store.clearProductFromCycle(productId: product.id)
-                        if selectedProductId == product.id {
-                            selectedProductId = nil
-                        }
-                    }
-                    productToRemove = nil
-                }
-                Button("Cancel", role: .cancel) {
-                    productToRemove = nil
-                }
-            } message: {
-                if let product = productToRemove {
-                    Text("This will remove \"\(product.name)\" from your cycle.")
-                }
-            }
             .overlay(alignment: .bottom) {
                 if store.hasUnsavedCycleChanges {
                     Button {
@@ -164,11 +143,34 @@ struct CycleView: View {
                             isReorderMode: isProductsListEditing,
                             onSelect: {
                                 if !isProductsListEditing {
+                                    let isSelecting = selectedProductId != product.id
                                     selectedProductId = selectedProductId == product.id ? nil : product.id
+                                    if isSelecting {
+                                        expandedDayIndex = nil
+                                    }
                                 }
                             },
                             onDelete: { productToRemove = product }
                         )
+                        .confirmationDialog("Remove from routine?", isPresented: Binding(
+                            get: { productToRemove?.id == product.id },
+                            set: { if !$0 { productToRemove = nil } }
+                        )) {
+                            Button("Remove", role: .destructive) {
+                                if let p = productToRemove, p.id == product.id {
+                                    store.clearProductFromCycle(productId: p.id)
+                                    if selectedProductId == p.id {
+                                        selectedProductId = nil
+                                    }
+                                }
+                                productToRemove = nil
+                            }
+                            Button("Cancel", role: .cancel) {
+                                productToRemove = nil
+                            }
+                        } message: {
+                            Text("This will remove \"\(product.name)\" from your cycle.")
+                        }
                         .listRowSeparator(.hidden)
                         .listRowBackground(AppColors.surface)
                         .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
@@ -188,9 +190,9 @@ struct CycleView: View {
                     .font(.subheadline)
                     .foregroundStyle(AppColors.accent)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 8)
-                    .background(AppColors.accentLight)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    // .padding(.vertical, 8)
+                    // .background(AppColors.accentLight)
+                    // .clipShape(RoundedRectangle(cornerRadius: 8))
             }
         }
         .padding()
@@ -225,7 +227,6 @@ struct CycleView: View {
                                 if isToday {
                                     Text("Today")
                                         .font(.caption)
-                                        .fontWeight(.semibold)
                                         .foregroundStyle(AppColors.textSecondary)
                                         .padding(.vertical, 2)
                                         .clipShape(Capsule())
@@ -252,9 +253,6 @@ struct CycleView: View {
                                     isDayExpanded: isExpanded,
                                     productColor: { store.productColor(for: $0) }
                                 )
-                                if isExpanded {
-                                    routineDetailPanel(products: morningProducts, routineType: .morning)
-                                }
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .contentShape(Rectangle())
@@ -277,9 +275,6 @@ struct CycleView: View {
                                     isDayExpanded: isExpanded,
                                     productColor: { store.productColor(for: $0) }
                                 )
-                                if isExpanded {
-                                    routineDetailPanel(products: nightProducts, routineType: .night)
-                                }
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .contentShape(Rectangle())
@@ -291,16 +286,24 @@ struct CycleView: View {
                                 }
                             }
                         }
-                        .padding(isToday ? 8 : 0)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(isToday ? AppColors.accent : Color.clear, lineWidth: 2)
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .contextMenu {
-                            Button("Set as today") {
-                                store.setTodayToCycleDay(dayIndex)
+                        
+                        if isExpanded {
+                            VStack(alignment: .leading, spacing: 8) {
+                                routineDetailPanel(products: morningProducts, routineType: .morning)
+                                routineDetailPanel( products: nightProducts, routineType: .night)
                             }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    }
+                    .padding(isToday ? 8 : 0)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(isToday ? AppColors.accentLight : Color.clear, lineWidth: 2)
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .contextMenu {
+                        Button("Set as today") {
+                            store.setTodayToCycleDay(dayIndex)
                         }
                     }
                 }
@@ -332,6 +335,7 @@ struct CycleView: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(AppColors.surface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
@@ -367,12 +371,19 @@ struct CycleView: View {
     @ViewBuilder
     private func routineDetailPanel(products: [Product], routineType: RoutineType) -> some View {
         VStack(alignment: .leading, spacing: 8) {
+            Text(routineType == .morning ? "Morning routine" : "Night routine")
+                    .font(.caption)
+                    .foregroundStyle(AppColors.textSecondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 12)
+                    .padding(.top, 6)
             if products.isEmpty {
                 Text("No products assigned")
                     .font(.caption)
                     .foregroundStyle(AppColors.textTertiary)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(12)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
             } else {
                 VStack(alignment: .leading, spacing: 8) {
                     ForEach(products) { product in
@@ -390,7 +401,8 @@ struct CycleView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(12)
+                .padding(.horizontal, 12)
+                .padding(.bottom, 6)
             }
         }
         .background(AppColors.rowBackground)
@@ -412,12 +424,6 @@ private struct ProductRow: View {
     var body: some View {
         Button(action: onSelect) {
             HStack(spacing: 12) {
-                if isReorderMode {
-                    Image(systemName: "line.3.horizontal")
-                        .font(.body)
-                        .foregroundStyle(AppColors.textSecondary)
-                }
-                
                 if let color {
                     Circle()
                         .fill(color)
@@ -446,7 +452,7 @@ private struct ProductRow: View {
             .background(isSelected ? AppColors.rowSelected : AppColors.rowBackground)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .strokeBorder(isSelected && !isReorderMode ? AppColors.accent : Color.clear, lineWidth: 2)
+                    .strokeBorder(isSelected && !isReorderMode ? AppColors.accent : Color.clear, lineWidth: 1)
             )
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
@@ -476,51 +482,57 @@ private struct CycleSlotCell: View {
     }
     
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(alignment: .center, spacing: 6) {
             Image(systemName: routineType == .morning ? "sun.max.fill" : "moon.fill")
                 .font(.caption)
                 .foregroundStyle(routineType == .morning ? AppColors.morningAccent : AppColors.nightAccent)
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.horizontal, 12)
+                .padding(.top, 8)
 
             Text(routineType == .morning ? "Morning" : "Night")
                 .font(.caption2)
                 .fontWeight(.medium)
                 .foregroundStyle(AppColors.textSecondary)
             
-            if products.isEmpty {
-                Text("Tap to add")
-                    .font(.caption2)
-                    .foregroundStyle(AppColors.textTertiary)
-            } else {
-                Text("\(products.count) \(products.count == 1 ? "product" : "products")")
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(AppColors.textPrimary)
+            VStack(alignment: .center, spacing: 6) {
+                if products.isEmpty {
+                    Text("Tap to add")
+                        .font(.caption2)
+                        .foregroundStyle(AppColors.textTertiary)
+                } else {
+                    Text("\(products.count) \(products.count == 1 ? "product" : "products")")
+                        .font(.caption2)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(AppColors.textPrimary)
+                }
+
+                HStack(spacing: 4) {
+                    if products.isEmpty {
+                        Color.clear.frame(width: 6, height: 6)
+                    } else {
+                        ForEach(products.prefix(5)) { product in
+                            if let color = productColor(product) {
+                                Circle()
+                                    .fill(color)
+                                    .frame(width: 6, height: 6)
+                            }
+                        }
+                        if products.count > 5 {
+                            Text("...")
+                                .font(.caption2)
+                                .foregroundStyle(AppColors.textTertiary)
+                        }
+                    }
+                }
             }
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.horizontal, 12)
+            .padding(.bottom, 8)
         }
         .frame(maxWidth: .infinity)
         .frame(height: 88)
         .background(emptyBackground)
-        .overlay(alignment: .bottom) {
-            if !products.isEmpty {
-                HStack(spacing: 4) {
-                    ForEach(products.prefix(5)) { product in
-                        if let color = productColor(product) {
-                            Circle()
-                                .fill(color)
-                                .frame(width: 6, height: 6)
-                        }
-                    }
-                    if products.count > 5 {
-                        Text("...")
-                            .font(.caption2)
-                            .foregroundStyle(AppColors.textTertiary)
-                    }
-                }
-                .padding(.bottom, 6)
-            }
-        }
         .overlay(
             RoundedRectangle(cornerRadius: 12)
                 .strokeBorder(isSelected ? AppColors.accent : (isDayExpanded ? (routineType == .morning ? AppColors.morningAccent : AppColors.nightAccent) : Color.clear), lineWidth: 2)

@@ -119,6 +119,22 @@ final class AppStore: ObservableObject {
     
     // MARK: - Products
     
+    /// Returns true if a product with the same name and category already exists.
+    /// - Parameters:
+    ///   - name: Product name (compared case-insensitively).
+    ///   - categoryId: Category id; nil is treated as "other".
+    ///   - excludingProductId: If set, this product is excluded (for edits).
+    func hasDuplicateProduct(name: String, categoryId: String?, excludingProductId: UUID? = nil) -> Bool {
+        let normalizedName = name.trimmingCharacters(in: .whitespaces).lowercased()
+        let catId = categoryId ?? "other"
+        guard !normalizedName.isEmpty else { return false }
+        return products.contains { p in
+            p.id != excludingProductId &&
+            p.name.lowercased() == normalizedName &&
+            (p.categoryId ?? "other") == catId
+        }
+    }
+    
     /// Adds a product and rebuilds the schedule.
     /// - Parameter product: The product to add.
     func addProduct(_ product: Product) {
