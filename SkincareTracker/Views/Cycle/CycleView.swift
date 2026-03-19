@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+/// Layout constants for CycleView. productListRowHeight must be >= 58 to prevent the last product row from being cut off.
+enum CycleViewLayout {
+    static let productListRowHeight: CGFloat = 58
+}
 
 struct CycleView: View {
     @EnvironmentObject var store: AppStore
@@ -27,6 +31,7 @@ struct CycleView: View {
                     instructionsSection
                 }
                 .padding()
+                .padding(.bottom, store.hasUnsavedCycleChanges ? 72 : 0)
             }
             .background(AppColors.background)
             .navigationTitle("Skincare Cycle")
@@ -180,7 +185,8 @@ struct CycleView: View {
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
                 .scrollDisabled(true)
-                .frame(minHeight: CGFloat(store.productsInCycleOrdered.count) * 52)
+                .contentMargins(.bottom, 12, for: .scrollContent)
+                .frame(minHeight: CGFloat(store.productsInCycleOrdered.count) * CycleViewLayout.productListRowHeight)
                 .padding(.bottom, 8)
             }
             

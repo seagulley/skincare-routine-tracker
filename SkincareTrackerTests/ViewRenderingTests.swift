@@ -51,6 +51,17 @@ final class ViewRenderingTests: XCTestCase {
         render(CycleView().environmentObject(store).environmentObject(savedBanner))
     }
 
+    func testCycleView_withManyProducts_rendersAllRows() throws {
+        for i in 1...10 {
+            let product = Product(name: "Product \(i)", ingredientNames: [])
+            store.addProduct(product)
+            store.addProductToCycle(product)
+        }
+        render(CycleView().environmentObject(store).environmentObject(savedBanner))
+        XCTAssertEqual(store.productsInCycleOrdered.count, 10)
+        XCTAssertEqual(CycleViewLayout.productListRowHeight, 58, "Row height must be 58 to prevent last product from being cut off")
+    }
+
     func testProductsView_renders() throws {
         render(ProductsView().environmentObject(store).environmentObject(savedBanner))
     }
