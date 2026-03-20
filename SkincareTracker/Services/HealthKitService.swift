@@ -2,7 +2,7 @@
 //  HealthKitService.swift
 //  SkincareTracker
 //
-//  Reads sleep data from Health for bedtime and wake-up reminder scheduling.
+//  Health authorization and reminder-oriented sleep time queries (`HealthKitServiceBase` for tests).
 //
 
 import Foundation
@@ -10,24 +10,48 @@ import HealthKit
 
 /// Base type for HealthKit access; enables injecting mocks in tests.
 open class HealthKitServiceBase: ObservableObject {
-    /// Whether HealthKit is available. Override in tests to return true.
     open class var isAvailable: Bool {
         HKHealthStore.isHealthDataAvailable()
     }
+
+    /// Prefer this over `type(of: service).isAvailable` in views; avoids runtime issues with `@EnvironmentObject`.
+    var isHealthKitDataAvailable: Bool { Self.isAvailable }
+
     open func requestAuthorization() async throws { fatalError("subclass must implement") }
     open func fetchTypicalBedtime() async -> (hour: Int, minute: Int)? { nil }
     open func fetchTypicalWakeTime() async -> (hour: Int, minute: Int)? { nil }
 }
 
-/// Fetches bedtime and wake time from Health app sleep data (in-bed samples).
+/// Performs Health authorization and reminder-oriented sleep time queries.
 final class HealthKitService: HealthKitServiceBase {
     private let healthStore = HKHealthStore()
 
-    /// Requests authorization to read sleep analysis. Call before fetching bedtime.
     override func requestAuthorization() async throws {
         guard Self.isAvailable else { return }
-        guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else { return }
-        try await healthStore.requestAuthorization(toShare: [], read: [sleepType])
+        let store = healthStore
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            DispatchQueue.main.async {
+                DispatchQueue.main.async {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        Task { @MainActor in
+                            await Self.requestSleepReadAuthorization(healthStore: store)
+                            continuation.resume()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static func requestSleepReadAuthorization(healthStore: HKHealthStore) async {
+        guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else {
+            return
+        }
+        let readTypes: Set<HKObjectType> = [sleepType]
+        let shareTypes: Set<HKSampleType> = []
+        do {
+            try await healthStore.requestAuthorization(toShare: shareTypes, read: readTypes)
+        } catch {}
     }
 
     /// Returns typical bedtime (hour and minute) from recent in-bed samples, or nil if unavailable.
