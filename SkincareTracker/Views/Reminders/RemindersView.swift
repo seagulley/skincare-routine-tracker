@@ -28,7 +28,7 @@ struct RemindersView: View {
                 ForEach(RoutineType.allCases, id: \.self) { routineType in
                     ReminderRowView(
                         config: store.reminderConfig(for: routineType),
-                        healthKitAvailable: Swift.type(of: healthKitService).isAvailable,
+                        healthKitAvailable: healthKitService.isHealthKitDataAvailable,
                         onSave: { config in
                             store.updateReminderConfig(config)
                             Task { await rescheduleReminders() }
@@ -133,7 +133,7 @@ struct ReminderRowView: View {
                     .listRowBackground(AppColors.rowBackground)
             }
 
-            if useHealthWakeTime && isMorningRoutine {
+            if healthKitAvailable && useHealthWakeTime && isMorningRoutine {
                 HStack {
                     Text("Time")
                         .foregroundStyle(AppColors.textPrimary)
@@ -142,7 +142,7 @@ struct ReminderRowView: View {
                         .foregroundStyle(AppColors.textSecondary)
                 }
                 .listRowBackground(AppColors.rowBackground)
-            } else if useHealthBedtime && isNightRoutine {
+            } else if healthKitAvailable && useHealthBedtime && isNightRoutine {
                 HStack {
                     Text("Time")
                         .foregroundStyle(AppColors.textPrimary)
@@ -193,8 +193,9 @@ struct ReminderRowView: View {
 }
 
 #Preview {
+    let health = HealthKitService()
     RemindersView()
         .environmentObject(AppStore())
         .environmentObject(ReminderService())
-        .environmentObject(HealthKitService())
+        .environmentObject(health as HealthKitServiceBase)
 }

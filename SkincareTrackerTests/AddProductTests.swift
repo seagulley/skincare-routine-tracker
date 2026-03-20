@@ -309,6 +309,23 @@ final class AddProductTests: XCTestCase {
         XCTAssertEqual(notInCycle, ["B"])
     }
 
+    /// Regression: staged products (in `cycleProductOrder` but not assigned to any day) must not appear in both
+    /// `productsInCycleOrdered` and `productsNotInCycle`. Without the fix, `productsForListView` concatenates both and duplicates IDs.
+    func testProductsForListView_stagedUnassignedProductAppearsOnce() throws {
+        let staged = Product(name: "StagedOnly", ingredientNames: [])
+        let other = Product(name: "ZebraOther", ingredientNames: [])
+        store.addProduct(staged)
+        store.addProduct(other)
+        store.addProductToCycle(staged)
+        XCTAssertTrue(store.productsInCycle.isEmpty, "Precondition: staged product must not be assigned to any slot")
+
+        let list = store.productsForListView
+        // Buggy `productsNotInCycle` used `!assignedProductIds` only, so staged rows appeared twice → count 3, duplicate UUIDs.
+        XCTAssertEqual(list.count, 2, "Each catalog product should appear exactly once in the Products tab list")
+        XCTAssertEqual(list.filter { $0.id == staged.id }.count, 1)
+        XCTAssertEqual(Set(list.map(\.id)).count, list.count, "List must not contain duplicate product IDs")
+    }
+
     func testProductsInCycleOrdered_followsCycleOrder() throws {
         let a = Product(name: "A", ingredientNames: [])
         let b = Product(name: "B", ingredientNames: [])
@@ -464,6 +481,39 @@ final class AddProductTests: XCTestCase {
         store.addProduct(product)
         store.updateProduct(productId: product.id, categoryId: "serum")
         XCTAssertEqual(store.product(by: product.id)?.categoryId, "serum")
+    }
+
+    /// Edit Product saves with `updateProduct(productId:categoryId:)`; picker stores Other as `"other"`.
+    /// Without cycle reorder, `cycleProductOrder` would stay [toner, cream, mystery] after changing to serum.
+    func testUpdateProduct_fromPickerOtherToSerum_reordersCycleProductOrder() throws {
+        let toner = Product(name: "Toner", ingredientNames: [], categoryId: "toner")
+        let cream = Product(name: "Cream", ingredientNames: [], categoryId: "cream")
+        let mystery = Product(name: "Mystery", ingredientNames: [], categoryId: "other")
+        store.addProduct(toner)
+        store.addProduct(cream)
+        store.addProduct(mystery)
+        store.cycleLength = 7
+        store.assignProductToCycleSlot(productId: toner.id, dayIndex: 0, routineType: .morning)
+        store.assignProductToCycleSlot(productId: cream.id, dayIndex: 0, routineType: .morning)
+        store.assignProductToCycleSlot(productId: mystery.id, dayIndex: 0, routineType: .morning)
+
+        XCTAssertEqual(store.cycleProductOrder, [toner.id, cream.id, mystery.id])
+
+        store.updateProduct(productId: mystery.id, categoryId: "serum")
+
+        XCTAssertNotEqual(
+            store.cycleProductOrder,
+            [toner.id, cream.id, mystery.id],
+            "Regression guard: unfixed app keeps stale order with serum still after cream"
+        )
+        XCTAssertEqual(store.cycleProductOrder, [toner.id, mystery.id, cream.id])
+
+        let slotProducts = store.productsOnCycleSlot(dayIndex: 0, routineType: .morning)
+            .compactMap { store.product(by: $0) }
+        XCTAssertEqual(
+            store.productsSortedByCycleOrder(slotProducts).map(\.name),
+            ["Toner", "Mystery", "Cream"]
+        )
     }
 
     func testUpdateProduct_withCategoryIdNil_keepsExisting() throws {

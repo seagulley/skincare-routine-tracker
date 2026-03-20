@@ -159,6 +159,55 @@ final class CycleTests: XCTestCase {
         XCTAssertTrue(store.nightRoutine.productIds.contains(productB.id), "B should be in night routine")
     }
 
+    /// Changing category from default “Other” to a specific step should reinsert the product in `cycleProductOrder` (same rules as adding to the cycle).
+    func testUpdateProduct_fromOtherToSpecificCategory_reordersCycleAndMorningRoutine() throws {
+        let toner = Product(name: "Toner", ingredientNames: [], categoryId: "toner")
+        let cream = Product(name: "Cream", ingredientNames: [], categoryId: "cream")
+        let wasOther = Product(name: "Mystery", ingredientNames: [], categoryId: nil)
+        store.addProduct(toner)
+        store.addProduct(cream)
+        store.addProduct(wasOther)
+        store.cycleLength = 7
+
+        store.assignProductToCycleSlot(productId: toner.id, dayIndex: 0, routineType: .morning)
+        store.assignProductToCycleSlot(productId: cream.id, dayIndex: 0, routineType: .morning)
+        store.assignProductToCycleSlot(productId: wasOther.id, dayIndex: 0, routineType: .morning)
+
+        XCTAssertEqual(
+            store.cycleProductOrder,
+            [toner.id, cream.id, wasOther.id],
+            "Other (order 99) should trail cream (7)"
+        )
+
+        var updated = wasOther
+        updated.categoryId = "serum"
+        store.updateProduct(updated)
+
+        // Without repositioning on Other→specific category, `cycleProductOrder` stays insertion order
+        // (toner → cream → wasOther) even though the product is now serum and should precede cream.
+        XCTAssertNotEqual(
+            store.cycleProductOrder,
+            [toner.id, cream.id, wasOther.id],
+            "Regression guard: unfixed behavior leaves stale [toner, cream, product] at end"
+        )
+        XCTAssertEqual(
+            store.cycleProductOrder,
+            [toner.id, wasOther.id, cream.id],
+            "Serum (4) should sort before cream (7)"
+        )
+
+        let slotProducts = store.productsOnCycleSlot(dayIndex: 0, routineType: .morning)
+            .compactMap { store.product(by: $0) }
+        let orderedNames = store.productsSortedByCycleOrder(slotProducts).map(\.name)
+        XCTAssertEqual(orderedNames, ["Toner", "Mystery", "Cream"])
+
+        XCTAssertEqual(
+            store.morningRoutine.productIds,
+            [toner.id, wasOther.id, cream.id],
+            "Saved routine list should match new category order"
+        )
+    }
+
     func testApplyCycleToRoutines_emptyCycle_clearsRoutines() throws {
         let product = Product(name: "Serum", ingredientNames: [])
         store.addProduct(product)

@@ -2,15 +2,13 @@
 //  HealthKitAccessTests.swift
 //  SkincareTrackerTests
 //
-//  Verifies that HealthKit authorization is triggered in onboarding and when toggling
-//  "Use Health bedtime" or "Use Health wake time" in Reminders.
-//  Uses ViewInspector for OnboardingView; RemindersView uses hosting + mock continuation (ViewInspector blocks on EnvObj).
+//  Verifies HealthKit authorization: onboarding Health sleep sync path, and Reminders
+//  when "Use Health bedtime" / "Use Health wake time" are on. RemindersView uses hosting + mock continuation.
 //
 
 import XCTest
 import SwiftUI
 import UIKit
-import ViewInspector
 @testable import SkincareTracker
 
 // MARK: - HealthKit Call Counting
@@ -139,14 +137,18 @@ final class HealthKitAccessTests: XCTestCase {
         _ = hosting.view
     }
 
-    /// Forces OnboardingView body evaluation. OnboardingView has no onAppear for Health; this just ensures view is built.
-    private func triggerOnboardingOnAppear<V: View>(_ view: V) throws {
-        _ = try view.inspect()
+    /// Hosts OnboardingView so onAppear fires. For unavailable HealthKit, run briefly; for available, waits for mock call.
+    private func hostOnboardingView(_ view: some View) {
+        let hosting = UIHostingController(rootView: view)
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 375, height: 812))
+        window.rootViewController = hosting
+        window.makeKeyAndVisible()
+        _ = hosting.view
     }
 
     // MARK: - Onboarding
 
-    func testOnboarding_onAppear_doesNotTriggerRequestAuthorization() throws {
+    func testOnboarding_onAppear_doesNotTriggerHealthAuthorization() throws {
         let (store, reminderService) = try requireDependencies()
         let mock = MockHealthKitService()
         let view = OnboardingView(onComplete: {})
@@ -154,7 +156,8 @@ final class HealthKitAccessTests: XCTestCase {
             .environmentObject(reminderService)
             .environmentObject(mock as HealthKitServiceBase)
 
-        try triggerOnboardingOnAppear(view)
+        hostOnboardingView(view)
+        RunLoop.current.run(until: Date().addingTimeInterval(0.15))
 
         XCTAssertEqual(
             mock.requestAuthorizationCallCount, 0,
@@ -162,22 +165,12 @@ final class HealthKitAccessTests: XCTestCase {
         )
     }
 
-    func testOnboarding_allowHealthAccessButton_triggersRequestAuthorization() async throws {
-        let (store, reminderService) = try requireDependencies()
+    func testOnboarding_performHealthAuthorizationRequest_matchesHealthSleepSyncTogglePath() async throws {
         let mock = MockHealthKitService()
-        let healthAccessAction: () async -> Void = { try? await mock.requestAuthorization() }
-        _ = OnboardingView(onComplete: {})
-            .environmentObject(store)
-            .environmentObject(reminderService)
-            .environmentObject(mock as HealthKitServiceBase)
-            .environment(\.healthAccessRequestAction, healthAccessAction)
-
-        // Invoke the button's action directly (injected). This avoids relying on accessibilityActivate(),
-        // which does not guarantee the SwiftUI button's action fires.
-        await healthAccessAction()
+        await OnboardingView.performHealthAuthorizationRequest(healthKitService: mock)
         XCTAssertEqual(
             mock.requestAuthorizationCallCount, 1,
-            "Allow Health Access button action should trigger request exactly once (not multiple times)"
+            "Same code path as enabling Sync with Health sleep schedule in onboarding"
         )
     }
 
@@ -189,28 +182,19 @@ final class HealthKitAccessTests: XCTestCase {
             .environmentObject(reminderService)
             .environmentObject(mock as HealthKitServiceBase)
 
-        try triggerOnboardingOnAppear(view)
+        hostOnboardingView(view)
+        RunLoop.current.run(until: Date().addingTimeInterval(0.15))
 
         XCTAssertEqual(
             mock.requestAuthorizationCallCount, 0,
-            "When HealthKit is unavailable, onboarding should not call requestAuthorization (no Health section shown)"
+            "When HealthKit is unavailable, onboarding does not request Health (no Health sync toggle)"
         )
     }
 
-    func testOnboarding_requestAuthorizationThrowing_doesNotCrash() async throws {
-        let (store, reminderService) = try requireDependencies()
+    func testOnboarding_performHealthAuthorizationRequest_throwing_doesNotCrash() async throws {
         let mock = MockHealthKitServiceThrowing()
-        let healthAccessAction: () async -> Void = { try? await mock.requestAuthorization() }
-        _ = OnboardingView(onComplete: {})
-            .environmentObject(store)
-            .environmentObject(reminderService)
-            .environmentObject(mock as HealthKitServiceBase)
-            .environment(\.healthAccessRequestAction, healthAccessAction)
-
-        // Smoke test only: invoke the action directly, verify mock was called and process survived.
-        // The view uses try? so there is no error UI to assert on.
-        await healthAccessAction()
-        XCTAssertEqual(mock.requestAuthorizationCallCount, 1)
+        await OnboardingView.performHealthAuthorizationRequest(healthKitService: mock)
+        XCTAssertEqual(mock.requestAuthorizationCallCount, 1, "try? swallows throw; no crash")
     }
 
     // MARK: - Reminders - Use Health Bedtime / Wake Time

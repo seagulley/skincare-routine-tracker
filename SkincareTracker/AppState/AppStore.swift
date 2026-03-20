@@ -50,9 +50,11 @@ final class AppStore: ObservableObject {
         cycleProductOrder.compactMap { product(by: $0) }
     }
 
-    /// Products not yet assigned to any routine. Sorted by name.
+    /// Products not listed in `cycleProductOrder` (not staged or ordered in the cycle UI). Sorted by name.
+    /// Staged-but-unassigned products are in `cycleProductOrder` only, so they do not appear here—avoids duplicating them in `productsForListView`.
     var productsNotInCycle: [Product] {
-        products.filter { !assignedProductIds.contains($0.id) }.sorted { $0.name < $1.name }
+        let orderedIds = Set(cycleProductOrder)
+        return products.filter { !orderedIds.contains($0.id) }.sorted { $0.name < $1.name }
     }
 
     /// Finds a product by its id.
@@ -152,9 +154,17 @@ final class AppStore: ObservableObject {
     /// Replaces an existing product with the same id, then rebuilds the schedule.
     /// - Parameter product: The updated product (must have an id of an existing product).
     func updateProduct(_ product: Product) {
+        let oldCategoryId = products.first(where: { $0.id == product.id })?.categoryId
         if let existing = products.first(where: { $0.id == product.id }) {
             products.remove(existing)
             products.insert(product)
+        }
+        if shouldRepositionInCycleAfterCategoryChange(from: oldCategoryId, to: product.categoryId) {
+            repositionProductInCycleOrderByCategory(productId: product.id)
+            if !cycleAssignments.isEmpty {
+                hasUnsavedCycleChanges = true
+                applyCycleToRoutines()
+            }
         }
         rebuildSchedule(from: Date())
     }
@@ -237,7 +247,24 @@ final class AppStore: ObservableObject {
     func addProductToCycle(_ product: Product) {
         guard products.contains(product) else { return }
         guard !cycleProductOrder.contains(product.id) else { return }
+        insertProductIdInCycleOrderByCategory(product.id)
+        // Don't assign color here: color is given only when product is added to a routine (assignProductToCycleSlot).
+        // Don't set hasUnsavedCycleChanges: adding without assigning to a day slot doesn't affect the schedule.
+    }
 
+    /// Nil and `"other"` both map to the default “Other” step (last in category order).
+    private func isEffectivelyOtherCategory(_ categoryId: String?) -> Bool {
+        (categoryId ?? "other") == "other"
+    }
+
+    /// When a product was uncategorized (“Other”) and gets a specific category, it should move in `cycleProductOrder` like a newly added product.
+    private func shouldRepositionInCycleAfterCategoryChange(from oldCategoryId: String?, to newCategoryId: String?) -> Bool {
+        isEffectivelyOtherCategory(oldCategoryId) && !isEffectivelyOtherCategory(newCategoryId)
+    }
+
+    /// Inserts `productId` into `cycleProductOrder` by application order (same rules as adding to the cycle). Caller must ensure the id is not already present.
+    private func insertProductIdInCycleOrderByCategory(_ productId: UUID) {
+        guard let product = product(by: productId) else { return }
         let productOrder = ProductCategory.applicationOrder(for: product.categoryId)
         var insertIndex = cycleProductOrder.count
         for (i, id) in cycleProductOrder.enumerated() {
@@ -247,9 +274,14 @@ final class AppStore: ObservableObject {
                 break
             }
         }
-        cycleProductOrder.insert(product.id, at: insertIndex)
-        // Don't assign color here: color is given only when product is added to a routine (assignProductToCycleSlot).
-        // Don't set hasUnsavedCycleChanges: adding without assigning to a day slot doesn't affect the schedule.
+        cycleProductOrder.insert(productId, at: insertIndex)
+    }
+
+    /// Removes and reinserts the product by category order so “Other” → specific category updates routine order.
+    private func repositionProductInCycleOrderByCategory(productId: UUID) {
+        guard cycleProductOrder.contains(productId) else { return }
+        cycleProductOrder.removeAll { $0 == productId }
+        insertProductIdInCycleOrderByCategory(productId)
     }
 
     /// Removes a product from cycle and clears its assigned color.
@@ -404,7 +436,34 @@ final class AppStore: ObservableObject {
     }
     
     init() {
+        if let loaded = AppStatePersistence.load() {
+            products = loaded.products
+            routines = loaded.routines
+            cycleProductColors = loaded.cycleProductColors
+            cycleProductOrder = loaded.cycleProductOrder
+            cycleAssignments = loaded.cycleAssignments
+            cycleStartDate = loaded.cycleStartDate
+            cycleLength = loaded.cycleLength
+            putOffRecords = Set(loaded.putOffRecords.map { PutOffRecord(productId: $0.productId, dayString: $0.dayString, routineType: $0.routineType) })
+            reminderConfigs = loaded.reminderConfigs
+            hasUnsavedCycleChanges = false
+        }
         rebuildSchedule(from: Date())
+    }
+
+    /// Persists app state to disk. Call when app enters background or before exit.
+    func saveToDisk() {
+        AppStatePersistence.save(
+            products: products,
+            routines: routines,
+            cycleProductColors: cycleProductColors,
+            cycleProductOrder: cycleProductOrder,
+            cycleAssignments: cycleAssignments,
+            cycleStartDate: cycleStartDate,
+            cycleLength: cycleLength,
+            putOffRecords: putOffRecords.map { (productId: $0.productId, dayString: $0.dayString, routineType: $0.routineType) },
+            reminderConfigs: reminderConfigs
+        )
     }
     
     // MARK: - Cycle

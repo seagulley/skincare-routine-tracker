@@ -13,27 +13,46 @@ struct ContentView: View {
     @StateObject private var store = AppStore()
     @StateObject private var savedBanner = SavedBannerTrigger()
     @StateObject private var reminderService = ReminderService()
-    @StateObject private var healthKitService: HealthKitServiceBase = HealthKitService()
+    @StateObject private var healthKitService = HealthKitService()
     @State private var showOnboarding = !OnboardingView.hasCompletedOnboarding
     @State private var selectedTab: AppTab = .today
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            TodayView()
-                .tabItem { Label("Today", systemImage: "sun.max.fill") }
-                .tag(AppTab.today)
+        ZStack {
+            TabView(selection: $selectedTab) {
+                TodayView()
+                    .tabItem { Label("Today", systemImage: "sun.max.fill") }
+                    .tag(AppTab.today)
 
-            CycleView()
-                .tabItem { Label("Cycle", systemImage: "arrow.2.circlepath") }
-                .tag(AppTab.cycle)
+                CycleView()
+                    .tabItem { Label("Cycle", systemImage: "arrow.2.circlepath") }
+                    .tag(AppTab.cycle)
 
-            ProductsView()
-                .tabItem { Label("Products", systemImage: "drop.fill") }
-                .tag(AppTab.products)
+                ProductsView()
+                    .tabItem { Label("Products", systemImage: "drop.fill") }
+                    .tag(AppTab.products)
 
-            RemindersView()
-                .tabItem { Label("Reminders", systemImage: "bell.fill") }
-                .tag(AppTab.reminders)
+                RemindersView()
+                    .tabItem { Label("Reminders", systemImage: "bell.fill") }
+                    .tag(AppTab.reminders)
+            }
+            // Onboarding as a root overlay (not fullScreenCover) so HealthKit’s permission UI can present and
+            // complete reliably on device. Nested modals often leave authorization callbacks stuck on real hardware.
+            if showOnboarding {
+                OnboardingView(onComplete: {
+                    showOnboarding = false
+                })
+                .environmentObject(store)
+                .environmentObject(savedBanner)
+                .environmentObject(reminderService)
+                .environmentObject(healthKitService as HealthKitServiceBase)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(AppColors.background)
+                .ignoresSafeArea()
+                .transition(.opacity)
+                .zIndex(1)
+            }
         }
         .onReceive(NotificationCenter.default.publisher(for: .openTodayTab)) { _ in
             selectedTab = .today
@@ -50,13 +69,18 @@ struct ContentView: View {
                 selectedTab = .today
             }
         }
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .background {
+                store.saveToDisk()
+            }
+        }
         .foregroundStyle(AppColors.textPrimary)
         .background(AppColors.background)
         .tint(AppColors.accent)
         .environmentObject(store)
         .environmentObject(savedBanner)
         .environmentObject(reminderService)
-        .environmentObject(healthKitService)
+        .environmentObject(healthKitService as HealthKitServiceBase)
         .overlay(alignment: .bottom) {
             if savedBanner.isShowing {
                 HStack(spacing: 8) {
@@ -75,15 +99,7 @@ struct ContentView: View {
             }
         }
         .animation(.easeInOut(duration: 0.25), value: savedBanner.isShowing)
-        .fullScreenCover(isPresented: $showOnboarding) {
-            OnboardingView(onComplete: {
-                showOnboarding = false
-            })
-            .environmentObject(store)
-            .environmentObject(savedBanner)
-            .environmentObject(reminderService)
-            .environmentObject(healthKitService)
-        }
+        .animation(.easeInOut(duration: 0.25), value: showOnboarding)
     }
 }
 

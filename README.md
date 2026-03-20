@@ -25,6 +25,13 @@ open SkincareTracker.xcodeproj
 3. Set deployment target to iOS 17
 4. Add the Info.plist entries for notifications and calendar usage
 
+## HealthKit (sleep-based reminders)
+
+- **Where to see your app:** Third-party apps are **not** listed under *Settings → Privacy & Security → Health* the way you might expect. After you allow access, manage them in the **Health** app: tap your **profile picture** (top right) → **Apps** (wording can vary slightly by iOS version).
+- **Xcode:** Open the **SkincareTracker** target → **Signing & Capabilities** → add **HealthKit** if it is missing (the project already includes `SkincareTracker.entitlements` with `com.apple.developer.healthkit`).
+- **Apple Developer:** The App ID for your bundle identifier must have the **HealthKit** capability enabled, and your provisioning profile must include it (Xcode usually fixes this when you add the capability).
+- Until the system successfully runs a Health permission request for your build, your app may not appear under Health → Apps.
+
 ## Features
 
 - **Products** – Add skincare products with names and ingredients

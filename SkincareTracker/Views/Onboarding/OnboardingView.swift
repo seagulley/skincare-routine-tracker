@@ -7,40 +7,28 @@
 
 import SwiftUI
 
-/// Optional override for Health access action. Used in tests to invoke the action directly without simulating a tap.
-private struct HealthAccessRequestActionKey: EnvironmentKey {
-    static let defaultValue: (() async -> Void)? = nil
-}
-extension EnvironmentValues {
-    var healthAccessRequestAction: (() async -> Void)? {
-        get { self[HealthAccessRequestActionKey.self] }
-        set { self[HealthAccessRequestActionKey.self] = newValue }
-    }
-}
-
 struct OnboardingView: View {
     @EnvironmentObject var store: AppStore
     @EnvironmentObject var reminderService: ReminderService
     @EnvironmentObject var healthKitService: HealthKitServiceBase
-    @Environment(\.healthAccessRequestAction) private var healthAccessRequestAction
 
     let onComplete: () -> Void
 
-    @State private var wantsReminders = true
-    @State private var isRequestingHealth = false
+    @State private var wantsNotifications = false
+    @State private var syncRemindersWithHealthSleep = false
     @State private var isRequestingNotifications = false
+    @State private var isRequestingHealth = false
+
+    private var healthKitAvailable: Bool {
+        healthKitService.isHealthKitDataAvailable
+    }
 
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
                 header
 
-                if type(of: healthKitService).isAvailable {
-                    healthSection
-                }
-
                 notificationsSection
-                remindersToggle
 
                 continueButton
             }
@@ -61,57 +49,6 @@ struct OnboardingView: View {
                 .multilineTextAlignment(.center)
         }
         .padding(.top, 24)
-    }
-
-    private var healthSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 12) {
-                Image(systemName: "heart.fill")
-                    .font(.title2)
-                    .foregroundStyle(AppColors.textOnAccent)
-                    .frame(width: 44, height: 44)
-                    .background(AppColors.accent)
-                    .clipShape(Circle())
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Health app")
-                        .font(.headline)
-                        .foregroundStyle(AppColors.textPrimary)
-                    Text("We use your sleep data to remind you at the right times—when you wake up and before bed.")
-                        .font(.subheadline)
-                        .foregroundStyle(AppColors.textSecondary)
-                }
-            }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(AppColors.surface)
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-
-            Button {
-                if let action = healthAccessRequestAction {
-                    Task { await action() }
-                } else {
-                    Task { await requestHealthAccess() }
-                }
-            } label: {
-                HStack {
-                    if isRequestingHealth {
-                        ProgressView()
-                            .tint(AppColors.textOnAccent)
-                    } else {
-                        Text("Allow Health Access")
-                            .fontWeight(.medium)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
-                .background(AppColors.accent)
-                .foregroundStyle(AppColors.textOnAccent)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-            }
-            .accessibilityIdentifier("allowHealthAccess")
-            .disabled(isRequestingHealth)
-        }
     }
 
     private var notificationsSection: some View {
@@ -138,43 +75,62 @@ struct OnboardingView: View {
             .background(AppColors.surface)
             .clipShape(RoundedRectangle(cornerRadius: 16))
 
-            Button {
-                Task { await requestNotificationPermission() }
-            } label: {
-                HStack {
+            Toggle(isOn: $wantsNotifications) {
+                HStack(spacing: 8) {
                     if isRequestingNotifications {
                         ProgressView()
-                            .tint(AppColors.textOnAccent)
-                    } else {
-                        Text("Enable Notifications")
-                            .fontWeight(.medium)
+                            .scaleEffect(0.9)
+                    }
+                    Text("Enable morning & night reminders")
+                        .fontWeight(.medium)
+                        .foregroundStyle(AppColors.textPrimary)
+                }
+            }
+            .accessibilityIdentifier("enableRemindersToggle")
+            .tint(.green)
+            .padding()
+            .background(AppColors.surface)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .disabled(isRequestingNotifications)
+            .onChange(of: wantsNotifications) { _, isOn in
+                if isOn {
+                    Task { @MainActor in
+                        await requestNotificationPermission()
+                    }
+                } else {
+                    syncRemindersWithHealthSleep = false
+                }
+            }
+
+            if wantsNotifications, healthKitAvailable {
+                Toggle(isOn: $syncRemindersWithHealthSleep) {
+                    HStack(spacing: 8) {
+                        if isRequestingHealth {
+                            ProgressView()
+                                .scaleEffect(0.9)
+                        }
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Sync with reminders with your Health app sleep schedule")
+                                .fontWeight(.medium)
+                                .foregroundStyle(AppColors.textPrimary)
+                        }
                     }
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
-                .background(AppColors.accent)
-                .foregroundStyle(AppColors.textOnAccent)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-            }
-            .disabled(isRequestingNotifications)
-        }
-    }
-
-    private var remindersToggle: some View {
-        Toggle(isOn: $wantsReminders) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Morning & night reminders")
-                    .font(.headline)
-                    .foregroundStyle(AppColors.textPrimary)
-                Text("Get reminded every morning and night for your skincare routine.")
-                    .font(.subheadline)
-                    .foregroundStyle(AppColors.textSecondary)
+                .tint(.green)
+                .padding()
+                .background(AppColors.surface)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .accessibilityIdentifier("healthSleepSyncToggle")
+                .disabled(isRequestingHealth)
+                .onChange(of: syncRemindersWithHealthSleep) { _, isOn in
+                    if isOn {
+                        Task { @MainActor in
+                            await requestHealthAccessWithWatchdog()
+                        }
+                    }
+                }
             }
         }
-        .tint(.green)
-        .padding()
-        .background(AppColors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
     private var continueButton: some View {
@@ -192,12 +148,30 @@ struct OnboardingView: View {
         .padding(.top, 8)
     }
 
-    private func requestHealthAccess() async {
+    /// Runs Health authorization off the SwiftUI `onChange` turn (see `HealthKitService`) and clears the spinner
+    /// after a timeout if the system never calls back (beta OS / presentation bugs).
+    @MainActor
+    private func requestHealthAccessWithWatchdog() async {
         isRequestingHealth = true
-        defer { isRequestingHealth = false }
+
+        let watchdog = Task { @MainActor in
+            try? await Task.sleep(for: .seconds(30))
+            guard !Task.isCancelled else { return }
+            isRequestingHealth = false
+            syncRemindersWithHealthSleep = false
+        }
+
+        await Self.performHealthAuthorizationRequest(healthKitService: healthKitService)
+        watchdog.cancel()
+        isRequestingHealth = false
+    }
+
+    /// Same authorization path as the Health sleep sync toggle; used by `HealthKitAccessTests`.
+    static func performHealthAuthorizationRequest(healthKitService: HealthKitServiceBase) async {
         try? await healthKitService.requestAuthorization()
     }
 
+    @MainActor
     private func requestNotificationPermission() async {
         isRequestingNotifications = true
         defer { isRequestingNotifications = false }
@@ -205,11 +179,14 @@ struct OnboardingView: View {
     }
 
     private func completeOnboarding() {
-        if wantsReminders {
+        if wantsNotifications {
             var morningConfig = store.reminderConfig(for: .morning)
             var nightConfig = store.reminderConfig(for: .night)
             morningConfig.isEnabled = true
             nightConfig.isEnabled = true
+            let useHealth = syncRemindersWithHealthSleep && healthKitAvailable
+            morningConfig.useHealthWakeTime = useHealth
+            nightConfig.useHealthBedtime = useHealth
             store.updateReminderConfig(morningConfig)
             store.updateReminderConfig(nightConfig)
             Task {
@@ -250,8 +227,9 @@ struct OnboardingView: View {
 }
 
 #Preview {
+    let health = HealthKitService()
     OnboardingView(onComplete: {})
         .environmentObject(AppStore())
         .environmentObject(ReminderService())
-        .environmentObject(HealthKitService())
+        .environmentObject(health as HealthKitServiceBase)
 }

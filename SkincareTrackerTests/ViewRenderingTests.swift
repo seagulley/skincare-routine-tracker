@@ -9,6 +9,7 @@
 import XCTest
 import SwiftUI
 import UIKit
+import ViewInspector
 @testable import SkincareTracker
 
 @MainActor
@@ -51,6 +52,35 @@ final class ViewRenderingTests: XCTestCase {
         render(CycleView().environmentObject(store).environmentObject(savedBanner))
     }
 
+    func testCycleView_withManyProducts_rendersAllRows() throws {
+        for i in 1...10 {
+            let product = Product(name: "Product \(i)", ingredientNames: [])
+            store.addProduct(product)
+            store.addProductToCycle(product)
+        }
+        render(CycleView().environmentObject(store).environmentObject(savedBanner))
+        XCTAssertEqual(store.productsInCycleOrdered.count, 10)
+        XCTAssertEqual(CycleViewLayout.productListRowHeight, 58, "Row height must be 58 to prevent last product from being cut off")
+    }
+
+    /// When a product is added via AddToCycleSheet but not yet assigned to any routine, it must appear
+    /// in the product list so the user can assign it. This fails if the view uses productsInCycle.isEmpty
+    /// (assigned-only) instead of productsInCycleOrdered.isEmpty (includes unassigned "staged" products).
+    func testCycleView_productAddedButUnassigned_appearsInProductList() throws {
+        let product = Product(name: "StagedSerum", ingredientNames: [])
+        store.addProduct(product)
+        store.addProductToCycle(product)
+        // No assignProductToCycleSlot — all routines remain empty; product is in cycleProductOrder only
+
+        XCTAssertTrue(store.productsInCycleOrdered.contains(where: { $0.name == "StagedSerum" }))
+        XCTAssertTrue(store.productsInCycle.isEmpty, "Product should not be in productsInCycle when unassigned")
+
+        let cycleView = CycleView().environmentObject(store).environmentObject(savedBanner)
+        _ = try cycleView.inspect().find(viewWithAccessibilityIdentifier: "cycle-product-list")
+        // If we get here, the product list is shown. If the fix were reverted (productsInCycle.isEmpty),
+        // the empty state would be shown instead and find would throw.
+    }
+
     func testProductsView_renders() throws {
         render(ProductsView().environmentObject(store).environmentObject(savedBanner))
     }
@@ -74,11 +104,12 @@ final class ViewRenderingTests: XCTestCase {
     }
 
     func testRemindersView_renders() throws {
+        let health = HealthKitService()
         render(
             RemindersView()
                 .environmentObject(store)
                 .environmentObject(ReminderService())
-                .environmentObject(HealthKitService())
+                .environmentObject(health as HealthKitServiceBase)
         )
     }
 

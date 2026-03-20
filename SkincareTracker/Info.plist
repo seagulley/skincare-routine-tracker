@@ -18,16 +18,18 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Skincare Tracker uses the camera to scan ingredient lists on product labels.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Skincare Tracker needs photo library access to scan ingredient lists from product label photos.</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Skincare Tracker needs calendar access to schedule reminders for your skincare routine.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Skincare Tracker uses the camera to scan ingredient lists on product labels.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Skincare Tracker uses your sleep data to send you routine reminders when you wake up and before you go to sleep.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Skincare Tracker only reads sleep data from Health to schedule reminders; it does not write health data.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Skincare Tracker needs photo library access to scan ingredient lists from product label photos.</string>
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>Skincare Tracker sends reminders for when to apply your skincare products.</string>
-	<key>NSHealthShareUsageDescription</key>
-	<string>Skincare Tracker uses your sleep data to remind you 1 hour before bedtime for your night routine.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
