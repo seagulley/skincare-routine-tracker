@@ -50,25 +50,7 @@ struct RemindersView: View {
     }
 
     private func rescheduleReminders() async {
-        var healthWakeTime: (hour: Int, minute: Int)? = nil
-        var healthBedtime: (hour: Int, minute: Int)? = nil
-        let morningConfig = store.reminderConfig(for: .morning)
-        let nightConfig = store.reminderConfig(for: .night)
-        if (morningConfig.useHealthWakeTime && morningConfig.isEnabled) || (nightConfig.useHealthBedtime && nightConfig.isEnabled) {
-            try? await healthKitService.requestAuthorization()
-            if morningConfig.useHealthWakeTime, morningConfig.isEnabled {
-                healthWakeTime = await healthKitService.fetchTypicalWakeTime()
-            }
-            if nightConfig.useHealthBedtime, nightConfig.isEnabled {
-                healthBedtime = await healthKitService.fetchTypicalBedtime()
-            }
-        }
-        await reminderService.rescheduleReminders(
-            configs: store.reminderConfigs,
-            productsForDate: { store.productsForDate($0, routineType: $1) },
-            healthWakeTime: healthWakeTime,
-            healthBedtime: healthBedtime
-        )
+        await reminderService.rescheduleAllReminders(store: store, healthKit: healthKitService)
     }
 }
 
