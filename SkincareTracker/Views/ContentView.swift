@@ -72,6 +72,13 @@ struct ContentView: View {
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase == .background {
                 store.saveToDisk()
+            } else if newPhase == .active, !showOnboarding {
+                Task {
+                    await reminderService.rollRemindersForwardIfNeeded(
+                        store: store,
+                        healthKit: healthKitService as HealthKitServiceBase
+                    )
+                }
             }
         }
         .foregroundStyle(AppColors.textPrimary)
