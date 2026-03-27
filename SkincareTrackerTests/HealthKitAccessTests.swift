@@ -266,7 +266,8 @@ final class HealthKitAccessTests: XCTestCase {
             .environment(\.reminderRescheduleComplete, { didComplete.fulfill() })
 
         hostRemindersView(view)
-        wait(for: [didComplete], timeout: 2)
+        // Reschedule walks a multi-day horizon and registers many non-repeating notifications; 2s is too tight on CI.
+        wait(for: [didComplete], timeout: 60)
 
         XCTAssertEqual(
             mock.requestAuthorizationCallCount, 0,

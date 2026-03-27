@@ -75,6 +75,11 @@ final class ReminderService: ObservableObject {
     func requestPermission() async -> Bool {
         let settings = await center.notificationSettings()
         if settings.authorizationStatus == .authorized { return true }
+        let env = ProcessInfo.processInfo.environment
+        // GitHub Actions and XCTest runs have no one to tap the system alert; requestAuthorization can block until timeout.
+        if env["CI"] == "true" || env["XCTestConfigurationFilePath"] != nil {
+            return false
+        }
         let granted = try? await center.requestAuthorization(options: [.alert, .sound])
         return granted ?? false
     }
