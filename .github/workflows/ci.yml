@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main, mainline]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit-tests:
+    name: Unit tests
+    runs-on: macos-15
+    # Typical run is a few minutes; fail fast if the runner is stuck (parallel XCTest + bad cache can run 30+ min).
+    timeout-minutes: 25
+    env:
+      DERIVED_DATA: ${{ github.workspace }}/.derivedData
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # SwiftPM only — restoring multi‑GB DerivedData is slow on Actions I/O and can interact badly with Xcode on CI.
+      - name: Cache SwiftPM
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Caches/org.swift.swiftpm
+          key: ${{ runner.os }}-swiftpm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-swiftpm-
+
+      - name: Select simulator
+        id: sim
+        run: |
+          set -eo pipefail
+          UDID=$(python3 <<'PY'
+          import json, subprocess, sys
+          raw = subprocess.check_output(
+              ["xcrun", "simctl", "list", "devices", "available", "-j"], text=True
+          )
+          for devices in json.loads(raw).get("devices", {}).values():
+              for d in devices:
+                  if d.get("isAvailable") and str(d.get("name", "")).startswith("iPhone"):
+                      print(d["udid"])
+                      sys.exit(0)
+          sys.exit(1)
+          PY
+          )
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+          echo "Using iOS Simulator UDID: $UDID"
+          xcrun simctl boot "$UDID" 2>/dev/null || true
+
+      - name: Build for testing
+        run: |
+          set -eo pipefail
+          xcodebuild build-for-testing \
+            -project SkincareTracker.xcodeproj \
+            -scheme SkincareTracker \
+            -sdk iphonesimulator \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            -derivedDataPath "$DERIVED_DATA" \
+            CODE_SIGN_IDENTITY="-"
+
+      - name: Run tests
+        run: |
+          set -eo pipefail
+          # Parallel XCTest on shared GitHub macOS runners often causes extreme slowness or hangs; run serially.
+          xcodebuild test-without-building \
+            -project SkincareTracker.xcodeproj \
+            -scheme SkincareTracker \
+            -sdk iphonesimulator \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            -derivedDataPath "$DERIVED_DATA" \
+            -parallel-testing-enabled NO \
+            CODE_SIGN_IDENTITY="-"
